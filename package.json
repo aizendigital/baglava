@@ -22,7 +22,7 @@
   },
   "scripts": {
     "contentserver": "node src/app/contentserver/index.js",
-    "test": "mocha"
+    "test": "mocha \"src/**/*.test.js\""
   },
   "repository": {
     "type": "git",
