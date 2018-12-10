@@ -3,10 +3,9 @@
 
 const Router = require('koa-router');
 const router = new Router();
-const mongoose = require('../../driver/mongo/mongo.js');
 const PageController = require('./controller/page.js');
 
-var pageController = new PageController(mongoose);
+let pageController = new PageController();
 
 router.get('/api/v1/page/:slug', pageController.getPage);
 

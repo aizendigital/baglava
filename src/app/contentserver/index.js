@@ -9,6 +9,8 @@ const pino = require('koa-pino-logger')();
 const config = require('../../config/config.js');
 const router = require('./router.js');
 
+require('../../driver/mongo/mongo.js')();
+
 app.use(pino)
    .use(router.routes())
    .use(router.allowedMethods());

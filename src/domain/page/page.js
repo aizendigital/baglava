@@ -15,4 +15,4 @@ pageSchema.statics.findBySlug = function(slug, cb) {
     return this.findOne({ slug: slug }, cb);
 }
 
-mongoose.model('Page', pageSchema);
+module.exports = mongoose.model('Page', pageSchema);
