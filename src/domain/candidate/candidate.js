@@ -2,14 +2,15 @@
 
 const mongoose = require('mongoose');
 const locationSchema = require('../location/locationSchema');
+const Schema = mongoose.Schema;
 
-let contact = mongoose.Schema({
+let contact = Schema({
     email: String,
     phone: String,
     location: locationSchema,
 }); 
 
-let experience = mongoose.Schema({
+let experience = Schema({
     title: String,
     description: String,
     location: locationSchema,
@@ -17,7 +18,7 @@ let experience = mongoose.Schema({
     endDate: Date
 });
 
-let education = mongoose.Schema({
+let education = Schema({
     school: String,
     degree: String,
     filedOfStudy: String,
@@ -27,7 +28,7 @@ let education = mongoose.Schema({
     endDate: Date
 });
 
-let candidateSchema = mongoose.Schema({
+let candidateSchema = Schema({
     title: String,
     firstName: String,
     lastName: String,

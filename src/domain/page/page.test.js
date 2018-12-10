@@ -1,15 +1,13 @@
 
 'use strict';
 
-const mongoose = require('mongoose');
 const assert = require('assert');
 const sinon = require('sinon');
+const Page = require('../page/page');
 
-require('./page');
 
 describe('Page model methods', () => {
-    var Page = mongoose.model('Page');
-    var PageMock = sinon.mock(Page);
+    let PageMock = sinon.mock(Page);
 
     it('#findBySlug', (done) => {
         PageMock

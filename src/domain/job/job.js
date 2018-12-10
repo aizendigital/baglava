@@ -4,8 +4,8 @@
 const mongoose = require('mongoose');
 const locationSchema = require('../location/locationSchema');
 const salarySchema = require('../salary/salarySchema');
-
-const employmentDetailSchema = mongoose.Schema({
+const Schema = mongoose.Schema;
+const employmentDetailSchema = Schema({
     type: String,
     experience: [String],
     education: [String],
@@ -13,7 +13,7 @@ const employmentDetailSchema = mongoose.Schema({
 });
 
 
-let jobSchema = mongoose.Schema({
+let jobSchema = Schema({
     title: String,
     slug: String,
     department: String,
