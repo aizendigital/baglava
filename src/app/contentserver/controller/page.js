@@ -47,6 +47,10 @@ class PageController{
         };
     };
 
+    constructor(){
+
+    }
+
 
     /**
      * @swagger
@@ -63,3 +67,5 @@ class PageController{
      */
 
 }
+
+module.exports = PageController;
