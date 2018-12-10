@@ -8,6 +8,9 @@ let location  = mongoose.Schema({
     city: String,
     additionalInfo: String,
     isRemote: Boolean,
+    address: String,
+    state : String,
+    zipCode: String,
     createdAt: { type: Date, default: Date.now },
 });
 
