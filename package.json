@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "config": "^3.0.0",
+    "joi": "^14.3.0",
     "koa": "^2.6.2",
     "koa-bodyparser": "^4.2.1",
     "koa-pino-logger": "^2.1.3",

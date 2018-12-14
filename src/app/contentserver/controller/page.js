@@ -4,7 +4,7 @@
 const pageModel = require('../../../domain/page/page');
 
 
-class PageController{
+class PageController {
 
 
     /**
@@ -26,29 +26,30 @@ class PageController{
      *         required: true
      *         type: string
      */
-    getPage (pageModel) {
-        return async function (ctx, next) {
-            let slug = ctx.params.slug;
-            
-            try {
-                let page = await pageModel.findBySlug(slug);
+    async getPage(ctx, next) {
 
-                if (!page) {
-                    ctx.throw(404);
-                }
-                ctx.body = page;
-            } catch (err) {
-                if (err.name === 'CastError' || err.name === 'NotFoundError') {
-                    ctx.throw(404);
-                }
-                ctx.log.error(err);
-                ctx.throw(500);
+        let slug = ctx.params.slug;
+
+        try {
+            let page = await this.pageModel.findBySlug(slug);
+
+            if (!page) {
+                ctx.throw(404);
             }
-        };
+            ctx.body = page;
+            next();
+        } catch (err) {
+            if (err.name === 'CastError' || err.name === 'NotFoundError') {
+                ctx.throw(404);
+            }
+            ctx.log.error(err);
+            ctx.throw(500);
+        }
     };
 
-    constructor(){
-
+    constructor() {
+        this.pageModel = pageModel;
+        this.getPage = this.getPage.bind(this);
     }
 
 
