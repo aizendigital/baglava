@@ -1,28 +1,31 @@
-
 'use strict';
 
-const jobModel = require('../../../domain/job/job');
-const jobListQuerySchema  = require('../../../validationSchemas/job');
+require('../../../domain/job/job');
+
 const Joi = require('joi');
+const jobListQuerySchema  = require('../../../validationSchemas/job');
 
-class JobController {
 
-    async getJobs(ctx, next) {
+function JobController(mongoose) {
+
+    let jobModel = mongoose.model('Job');
+
+    /**
+     * Path: /api/v1/jobs
+     * Method: Get
+     * Desc: get jobs list
+     */
+
+    this.getJobs = async function (ctx, next) {
 
         const result = Joi.validate( ctx.query, jobListQuerySchema);
-        ctx.body = result;
+        if( result.error !== null ){
+            ctx.throw(400);
+        }
 
-        next();
+        
     };
-
-    constructor() {
-        this.jobModel = jobModel;
-        this.getJobs = this.getJobs.bind(this);
-
-    }
-
-
-
+    
 }
 
 module.exports = JobController;

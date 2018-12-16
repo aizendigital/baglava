@@ -5,7 +5,6 @@
 const Koa = require('koa');
 
 const app = new Koa();
-require('../../driver/mongo/mongo.js')();
 const pino = require('koa-pino-logger')();
 const config = require('../../config/config.js');
 const router = require('./router.js');

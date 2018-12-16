@@ -12,7 +12,7 @@ let pageSchema = mongoose.Schema({
 
 
 pageSchema.statics.findBySlug = function(slug, cb) {
-    return this.findOne({ slug: slug }, cb);
+    return this.findOne({ slug: slug }).then(cb);
 }
 
 module.exports = mongoose.model('Page', pageSchema);

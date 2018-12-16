@@ -32,6 +32,9 @@ let jobSchema = Schema({
     createdAt: { type: Date, default: Date.now }
 });
 
+jobSchema.statics.listJobs = function(query){
+    // return this.find({ slug: slug }).then(cb);
+}
 
 
 module.exports = mongoose.model('Job', jobSchema);
