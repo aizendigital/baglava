@@ -2,24 +2,30 @@
 
 const mongoose = require('mongoose');
 const locationSchema = require('../location/locationSchema');
-const Schema = mongoose.Schema;
 
-let contact = Schema({
+let schoolSchema = mongoose.Schema({
+    location : locationSchema,
+    title: String
+})
+
+
+let contactSchema = mongoose.Schema({
     email: String,
     phone: String,
     location: locationSchema,
 }); 
 
-let experience = Schema({
+let experienceSchema = mongoose.Schema({
     title: String,
     description: String,
     location: locationSchema,
+    company : [{ type: mongoose.Schema.Types.ObjectId, ref: 'Company' }],
     startDate: Date,
     endDate: Date
 });
 
-let education = Schema({
-    school: String,
+let educationSchema = mongoose.Schema({
+    school: schoolSchema,
     degree: String,
     filedOfStudy: String,
     description: String,
@@ -28,16 +34,16 @@ let education = Schema({
     endDate: Date
 });
 
-let candidateSchema = Schema({
+let candidateSchema = mongoose.Schema({
     title: String,
     firstName: String,
     lastName: String,
     website: String,
-    contact: contact,
+    contact: contactSchema,
     about: String,
     skills: [String],
-    experiences: [experience],
-    education: [education]
+    experiences: [experienceSchema],
+    education: [educationSchema]
 })
 
 module.exports = mongoose.model('Candidate', candidateSchema);

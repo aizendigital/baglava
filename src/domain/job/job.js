@@ -3,9 +3,15 @@
 
 const mongoose = require('mongoose');
 const locationSchema = require('../location/locationSchema');
-const salarySchema = require('../salary/salarySchema');
-const Schema = mongoose.Schema;
-const employmentDetailSchema = Schema({
+
+const salarySchema = mongoose.Schema({
+    from: String,
+    to: String,
+    currency: String,
+    createdAt: { type: Date, default: Date.now },
+});
+
+const employmentDetailSchema = mongoose.Schema({
     type: String,
     experience: [String],
     education: [String],
@@ -13,7 +19,7 @@ const employmentDetailSchema = Schema({
 });
 
 
-let jobSchema = Schema({
+let jobSchema = mongoose.Schema({
     title: String,
     slug: String,
     department: String,
@@ -24,16 +30,17 @@ let jobSchema = Schema({
     benefits: [String],
     isInHouseEmployer: Boolean,
     isAgency: Boolean,
-    salary : salarySchema,
+    salary: salarySchema,
     jobFunction: String,
     companyIndustry: String,
-    employmentDetail : employmentDetailSchema,
-    company: { type: Schema.Types.ObjectId, ref: 'Company' },
+    employmentDetail: employmentDetailSchema,
+    company: { type: mongoose.Schema.Types.ObjectId, ref: 'Company' },
     createdAt: { type: Date, default: Date.now }
 });
 
-jobSchema.statics.listJobs = function(query){
+jobSchema.statics.listJobs = function (q, limit, offset, order) {
     // return this.find({ slug: slug }).then(cb);
+
 }
 
 

@@ -3,10 +3,22 @@
 
 const mongoose = require('mongoose');
 const locationSchema = require('../location/locationSchema');
-const salarySchema = require('../salary/salarySchema');
-const revenueSchema = require('../revenue/revenueSchema');
-const Schema = mongoose.Schema;
-const interviewSchema = Schema({
+
+const salarySchema = mongoose.Schema({
+    from: String,
+    to: String,
+    currency: String,
+    createdAt: { type: Date, default: Date.now },
+});
+
+const revenueSchema  = mongoose.Schema({
+    from: String,
+    to: String,
+    currency: String,
+    createdAt: { type: Date, default: Date.now },
+});
+
+const interviewSchema = mongoose.Schema({
     title: String,
     application: String,
     interview: String,
@@ -14,7 +26,7 @@ const interviewSchema = Schema({
     negotiation: String
 });
 
-let companySchema = Schema({
+let companySchema = mongoose.Schema({
     title: String,
     slug: String,
     overview: String,
@@ -26,7 +38,7 @@ let companySchema = Schema({
     size: String,
     photos: [String],
     revenue : revenueSchema,
-    reviews : [{ type: Schema.Types.ObjectId, ref: 'Review' }],
+    reviews : [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }],
     salaries : [salarySchema],
     interviews: [interviewSchema],
     createdAt: { type: Date, default: Date.now }
