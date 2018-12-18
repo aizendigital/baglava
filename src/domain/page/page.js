@@ -11,8 +11,8 @@ let pageSchema = mongoose.Schema({
 });
 
 
-pageSchema.statics.findBySlug = function(slug, cb) {
-    return this.findOne({ slug: slug }).then(cb);
+pageSchema.statics.findBySlug = function (slug) {
+    return this.findOne({ slug: slug });
 }
 
 module.exports = mongoose.model('Page', pageSchema);

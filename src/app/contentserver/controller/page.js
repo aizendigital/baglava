@@ -13,21 +13,19 @@ function PageController(mongoose) {
 
     this.getPage = async function (ctx, next) {
         let slug = ctx.params.slug;
-
-        try {
-            let page = await pageModel.findBySlug(slug);
-
-            if (!page) {
-                ctx.throw(404);
-            }
-            ctx.body = { data: page , error : null };
-        } catch (err) {
+        let page = await pageModel.findBySlug(slug).catch(err => {
             if (err.name === 'CastError' || err.name === 'NotFoundError') {
                 ctx.throw(404);
             }
             ctx.log.error(err);
-            ctx.throw(500);
+            ctx.throw(404);
+        });
+
+        if (!page) {
+            ctx.throw(404);
         }
+        ctx.body = { data: page, error: null };
+
     };
 
 }

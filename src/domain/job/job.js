@@ -40,7 +40,17 @@ let jobSchema = mongoose.Schema({
 
 jobSchema.statics.listJobs = function (q, limit, offset, order) {
     // return this.find({ slug: slug }).then(cb);
-
+    return this.find({
+        '$or': [{
+            title: /q/
+        }, {
+            description: /q/
+        }
+        ]
+    })
+        .sort({ order: 1 })
+        .limit(limit)
+        .skip(offset);
 }
 
 
