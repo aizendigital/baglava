@@ -3,7 +3,8 @@
 require('../../../domain/job/job');
 
 const Joi = require('joi');
-const jobListQuerySchema = require('../../../validationSchemas/job');
+const jobListQuerySchema = require('../../../domain/job/jobValidationSchema');
+
 
 
 function JobController(mongoose) {
