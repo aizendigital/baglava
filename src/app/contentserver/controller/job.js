@@ -74,7 +74,6 @@ function JobController(mongoose) {
 
         ctx.body = { data: job, error: null };
         
-
     };
 
     /**

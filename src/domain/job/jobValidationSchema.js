@@ -39,5 +39,3 @@ module.exports.job = {
     company: Joi.string().required(),
 };
 
-
-module.exports.jobList = jobList;
