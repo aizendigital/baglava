@@ -19,12 +19,14 @@ function CompanyController(mongoose) {
     this.createCompany = async function (ctx, next) {
 
         let result = Joi.validate(ctx.request.body, companyQuerySchema.company);
+        // ctx.body = ctx.request.body;
+        // return;
         if (result.error !== null) {
             ctx.throw(400);
         }
-
+        
         let company = await companyModel.
-            createJob(ctx.request.body)
+            createCompany(ctx.request.body)
             .catch(err => ctx.throw(err));
 
         ctx.body = { data: { id: company._id }, error: null };

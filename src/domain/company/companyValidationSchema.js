@@ -15,20 +15,17 @@ const revenueSchema = {
 };
 
 
-module.exports.company = {
+module.exports.company = Joi.object({
     title: Joi.string().required(),
     overview: Joi.string(),
     logo: Joi.string(),
-    location: locationSchema,
     website: Joi.string(),
     foundedDate: Joi.date().max('now'),
     industry: Joi.string(),
-    size: Joi.number().integer().positive().required(),
+    size: Joi.number().integer().positive(),
     photos: Joi.array().items(Joi.string()),
-    revenue: revenueSchema,
-    reviews: Joi.array().items(Joi.string()),
-    salaries: Joi.array().items(salarySchema)
-};
+    reviews: Joi.array().items(Joi.string())
+}).required();
 
 
 

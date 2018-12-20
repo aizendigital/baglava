@@ -1,14 +1,14 @@
 'use strict';
 
-const joi = require('joi');
+const Joi = require('joi');
 
 module.exports.location  = Joi.object().keys({
-    country: joi.string(),
-    city: joi.string(),
-    additionalInfo: joi.string(),
-    isRemote: joi.boolean(),
-    address: joi.string(),
-    state : joi.string(),
-    zipCode: joi.string()
+    country: Joi.string(),
+    city: Joi.string(),
+    additionalInfo: Joi.string(),
+    isRemote: Joi.boolean(),
+    address: Joi.string(),
+    state : Joi.string(),
+    zipCode: Joi.string()
 }).or('country', 'isRemote');
 
