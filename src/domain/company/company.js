@@ -45,6 +45,10 @@ let companySchema = mongoose.Schema({
 });
 
 
+companySchema.statics.existsBySlug = function(slug){
+    return this.find({slug : slug});
+}
+
 
 module.exports = mongoose.model('Company', companySchema);
 
