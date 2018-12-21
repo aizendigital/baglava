@@ -39,3 +39,20 @@ module.exports.job = {
     company: Joi.string().required(),
 };
 
+
+module.exports.modifiedJob = {
+    title: Joi.string().required(),
+    department: Joi.string(),
+    internalCode: Joi.string(),
+    location: location,
+    description: Joi.string(),
+    requirements: Joi.string(),
+    benefits: Joi.array().items(Joi.string()),
+    isInHouseEmployer: Joi.boolean(),
+    isAgency: Joi.boolean(),
+    salary: salary,
+    jobFunction: Joi.string(),
+    companyIndustry: Joi.string(),
+    employmentDetail: employmentDetail,
+};
+

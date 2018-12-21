@@ -25,7 +25,7 @@ let jobSchema = mongoose.Schema({
     slug: { type: String, required: true, unique: true },
     department: String,
     internalCode: String,
-    location: { type: locationSchema, required: true },
+    location: { type: locationSchema },
     description: String,
     requirements: String,
     benefits: [String],
@@ -35,7 +35,7 @@ let jobSchema = mongoose.Schema({
     jobFunction: String,
     companyIndustry: String,
     employmentDetail: employmentDetailSchema,
-    company: { type: mongoose.Schema.Types.ObjectId, ref: 'Company' },
+    company: { type: mongoose.Schema.Types.ObjectId, ref: 'Company', required: true },
     createdAt: { type: Date, default: Date.now }
 });
 
@@ -56,34 +56,21 @@ jobSchema.statics.listJobs = function (q, limit, offset, order) {
 
 
 jobSchema.statics.createJob = async function (job) {
-    jon.slug = await getJobUniqueSlug(job.title);
     return this.create(job);
 }
 
-jobSchema.statics.updateJob = function (job) {
-    job.slug = undefined;
-    return this.findOneAndUpdate({ _id: mongoose.Types.ObjectId(job.id) }, job).exec();
+jobSchema.statics.updateJob = function (condition, job) {
+    return this.findOneAndUpdate(condition, job, { new: true }).exec();
 }
 jobSchema.statics.deleteJob = function (jobId) {
     return this.findOneAndDelete({ _id: mongoose.Types.ObjectId(jobId) }).exec();
 }
 
 
-jobSchema.statics.existsBySlug = function(slug){
-    return this.find({slug : slug});
+jobSchema.statics.existsBySlugAndCompanyId = function (slug, companyId) {
+    return this.findOne({ slug: slug, company: new mongoose.Types.ObjectId(companyId) });
 }
 
-
-
-async function getJobUniqueSlug(title, rand) {
-    let slug = slugify(title);
-    if (rand) slug = slug + '-' + rand;
-    if (!await this.findOne({ slug: slug })) {
-        return slug;
-    } else {
-        return getJobUniqueSlug(title, Math.random().toString(36).substring(7));
-    }
-}
 
 module.exports = mongoose.model('Job', jobSchema);
 

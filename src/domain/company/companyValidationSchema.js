@@ -14,7 +14,7 @@ const revenueSchema = {
     currency: Joi.string()
 };
 
-
+//TODO review kit fix
 module.exports.company = Joi.object({
     title: Joi.string().required(),
     overview: Joi.string(),

@@ -1,15 +1,14 @@
 'use strict';
 
-require('../../../domain/job/job');
-
-const Joi = require('joi');
 const jobQuerySchema = require('../../../domain/job/jobValidationSchema');
 const companyModel = require('../../../domain/company/company');
+const jobModel = require('../../../domain/job/job');
 const constants = require('../../../utils/constants');
+const slugify = require('slugify');
+const Joi = require('joi');
+
 
 function JobController(mongoose) {
-
-    let jobModel = mongoose.model('Job');
 
 
     /**
@@ -27,7 +26,9 @@ function JobController(mongoose) {
 
         let jobs = await jobModel.
             listJobs(ctx.query.q, ctx.query.limit, ctx.query.offset, ctx.query.order)
-            .catch(err => ctx.throw(err));
+            .catch(err => {
+                ctx.throw(err);
+            });
         if (!jobs) {
             ctx.throw(404);
         }
@@ -48,11 +49,15 @@ function JobController(mongoose) {
             ctx.throw(400);
         }
 
+        ctx.request.body.slug = await generateJobSlug(ctx.request.body.title);
+
         let job = await jobModel.
             createJob(ctx.request.body)
-            .catch(err => ctx.throw(err));
+            .catch(err => {
+                ctx.throw(err);
+            });
 
-        ctx.body = { data: { id: job._id }, error: null };
+        ctx.body = { data: { id: job._id, slug: job.slug }, error: null };
 
     };
 
@@ -64,16 +69,18 @@ function JobController(mongoose) {
 
     this.getJobProfile = async function (ctx, next) {
 
-        if(!await companyModel.existsBySlug(ctx.params.companySlug)){
+        let company = await companyModel.existsBySlug(ctx.params.companySlug);
+        if (!company) {
             ctx.throw(404);
         }
-        let job = await jobModel.existsBySlug(ctx.params.jobSlug); 
-        if(!job){
+        console.log(ctx.params.jobSlug, company);
+        let job = await jobModel.existsBySlugAndCompanyId(ctx.params.jobSlug, company._id);
+        if (!job) {
             ctx.throw(404);
         }
 
         ctx.body = { data: job, error: null };
-        
+
     };
 
     /**
@@ -84,23 +91,31 @@ function JobController(mongoose) {
 
     this.updateJob = async function (ctx, next) {
 
-        let result = Joi.validate(ctx.request.body, jobQuerySchema.job);
+        let result = Joi.validate(ctx.request.body, jobQuerySchema.modifiedJob);
         if (result.error !== null) {
             ctx.throw(400);
         }
-        if(!await companyModel.existsBySlug(ctx.params.companySlug)){
+        let company = await companyModel.existsBySlug(ctx.params.companySlug);
+        if (!company) {
             ctx.throw(404);
         }
-        let job = await jobModel.existsBySlug(ctx.params.jobSlug); 
-        if(!job){
+        let job = await jobModel.existsBySlugAndCompanyId(ctx.params.jobSlug, company._id);
+        if (!job) {
             ctx.throw(404);
         }
 
-        let job = await jobModel.
-            updateJob(ctx.request.body)
-            .catch(err => ctx.throw(err));
+        if (ctx.request.body.title) {
+            ctx.request.body.slug = await generateJobSlug(ctx.request.body.title);
+        }
 
-        ctx.body = { data: { id: job._id , message: constants.updateSuccessMsg}, error: null };
+
+        job = await jobModel.
+            updateJob({ id: job._id }, ctx.request.body)
+            .catch(err => {
+                ctx.throw(err);
+            });
+
+        ctx.body = { data: { id: job._id, slug: job.slug, message: constants.updateSuccessMsg }, error: null };
 
     };
 
@@ -112,19 +127,33 @@ function JobController(mongoose) {
 
     this.deleteJob = async function (ctx, next) {
 
-        if(!await companyModel.existsBySlug(ctx.params.companySlug)){
+        let company = await companyModel.existsBySlug(ctx.params.companySlug);
+        if (!company) {
             ctx.throw(404);
         }
-        let job = await jobModel.existsBySlug(ctx.params.jobSlug); 
-        if(!job){
+        let job = await jobModel.existsBySlugAndCompanyId(ctx.params.jobSlug, company._id);
+        if (!job) {
             ctx.throw(404);
         }
 
         await jobModel.deleteJob(job._id);
 
-        ctx.body = { data: { id: job._id , message: constants.deleteSuccessMsg}, error: null };
+        ctx.body = { data: { id: job._id, message: constants.deleteSuccessMsg }, error: null };
 
     };
+
+    async function generateJobSlug(title, rand) {
+        let slug = slugify(title);
+
+        console.log(slug);
+        if (!slug) slug = Math.random().toString(36).substring(7);//TODO add persian support later
+        if (rand) slug = slug + '-' + rand;
+        if (!await jobModel.findOne({ slug: slug })) {
+            return slug;
+        } else {
+            return generateJobSlug(title, Math.random().toString(36).substring(7));
+        }
+    }
 
 }
 
