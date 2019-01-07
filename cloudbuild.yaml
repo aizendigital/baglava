@@ -1,5 +1,3 @@
 steps:
-- name: 'gcr.io/cloud-builders/gcloud'
-  args: ['npm', 'run', 'test']
-images:
-- 'node:8.14.0-alpine'
+- name: 'gcr.io/cloud-builders/npm'
+  args: ['run', 'test']
