@@ -10,7 +10,7 @@ steps:
   args: ['build', '--tag=gcr.io/leafy-grammar-222414/baglava:latest', '.']  
 # Sending coverage reports to code climate
 - name: 'gcr.io/cloud-builders/curl'
-  args: ['https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64', '--output', 'cc-test-reporter']
+  args: ['https://codeclimate.com/downloads/test-reporter/test-reporter-0.6.3-linux-amd64', '--output', 'cc-test-reporter']
 - name: 'ubuntu'
   args: ['chmod', '+x', 'cc-test-reporter']
 - name: 'ubuntu'
