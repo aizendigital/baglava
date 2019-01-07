@@ -13,14 +13,14 @@ steps:
   args: ['-L', 'https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64', '--output', 'cc-test-reporter']
 - name: 'ubuntu'
   args: ['chmod', '+x', 'cc-test-reporter']
-- name: 'ubuntu'
+- name: 'git'
   entrypoint: './cc-test-reporter'
   args: ['before-build']
   env:
   - 'CC_TEST_REPORTER_ID=be09c878390676aa4f4dcbc03853cb8dab1bf8e1cc66d40f09293d66982d81b5'
 - name: 'gcr.io/cloud-builders/yarn'
   args: ['run', 'test-with-coverage']
-- name: 'ubuntu'
+- name: 'git'
   entrypoint: './cc-test-reporter'
   args: ['after-build']
   env:
