@@ -1,0 +1,40 @@
+steps:
+# Installing dependencies
+- name: 'gcr.io/cloud-builders/yarn'
+  args: ['install']
+# Running tests
+- name: 'gcr.io/cloud-builders/yarn'
+  args: ['run', 'test']
+# Building docker image
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '--tag=gcr.io/leafy-grammar-222414/baglava:latest', '.']  
+# Sending coverage reports to code climate
+- name: 'gcr.io/cloud-builders/curl'
+  args: ['-L', 'https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64', '--output', 'cc-test-reporter']
+- name: 'ubuntu'
+  args: ['chmod', '+x', 'cc-test-reporter']
+- name: 'gcr.io/cloud-builders/git'
+  entrypoint: './cc-test-reporter'
+  args: ['before-build']
+  env:
+  - 'CC_TEST_REPORTER_ID=be09c878390676aa4f4dcbc03853cb8dab1bf8e1cc66d40f09293d66982d81b5'
+  - 'GIT_COMMIT_SHA=$COMMIT_SHA'
+  - 'GIT_BRANCH=$BRANCH_NAME'
+  - 'GIT_COMMITED_AT=1546874761'
+  - 'CI_NAME=CloudBuild'
+  - 'CI_BUILD_ID=$BUILD_ID'
+  - 'CI_BUILD_URL=https://console.cloud.google.com/cloud-build/builds/$BUILD_ID'
+- name: 'gcr.io/cloud-builders/yarn'
+  args: ['run', 'test-with-coverage']
+- name: 'gcr.io/cloud-builders/git'
+  entrypoint: './cc-test-reporter'
+  args: ['after-build', '--debug']
+  env:
+  - 'CC_TEST_REPORTER_ID=be09c878390676aa4f4dcbc03853cb8dab1bf8e1cc66d40f09293d66982d81b5'
+  - 'GIT_COMMIT_SHA=$COMMIT_SHA'
+  - 'GIT_BRANCH=$BRANCH_NAME'
+  - 'GIT_COMMITED_AT=1546874761'
+  - 'CI_NAME=CloudBuild'
+  - 'CI_BUILD_ID=$BUILD_ID'
+  - 'CI_BUILD_URL=https://console.cloud.google.com/cloud-build/builds/$BUILD_ID'
+images: ['gcr.io/leafy-grammar-222414/baglava:latest']
