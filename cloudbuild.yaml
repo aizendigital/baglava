@@ -3,3 +3,6 @@ steps:
   args: ['install']
 - name: 'gcr.io/cloud-builders/npm'
   args: ['run', 'test']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '--tag=gcr.io/leafy-grammer-222414/baglava', '.']  
+images: ['gcr.io/leafy-grammar-222414/baglava']
