@@ -14,12 +14,14 @@ steps:
 - name: 'ubuntu'
   args: ['chmod', '+x', 'cc-test-reporter']
 - name: 'ubuntu'
-  args: ['cc-test-reporter', 'before-build']
+  entrypoint: './cc-test-reporter'
+  args: ['before-build']
   env:
   - 'CC_TEST_REPORTER_ID=be09c878390676aa4f4dcbc03853cb8dab1bf8e1cc66d40f09293d66982d81b5'
 - name: 'gcr.io/cloud-builders/yarn'
   args: ['run', 'test-with-coverage']
 - name: 'ubuntu'
+  entrypoint: './cc-test-reporter'
   args: ['cc-test-reporter', 'after-build']
   env:
   - 'CC_TEST_REPORTER_ID=be09c878390676aa4f4dcbc03853cb8dab1bf8e1cc66d40f09293d66982d81b5'
