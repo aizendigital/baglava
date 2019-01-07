@@ -22,7 +22,7 @@ steps:
   args: ['run', 'test-with-coverage']
 - name: 'gcr.io/cloud-builders/git'
   entrypoint: './cc-test-reporter'
-  args: ['after-build']
+  args: ['after-build', '--debug']
   env:
   - 'CC_TEST_REPORTER_ID=be09c878390676aa4f4dcbc03853cb8dab1bf8e1cc66d40f09293d66982d81b5'
 images: ['gcr.io/leafy-grammar-222414/baglava:latest']
