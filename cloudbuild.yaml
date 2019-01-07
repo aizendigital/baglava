@@ -1,7 +1,5 @@
 steps:
 # Installing dependencies
-- name: 'gcr.io/cloud-builders/git'
-  entrypoint: 'env'
 - name: 'gcr.io/cloud-builders/yarn'
   args: ['install']
 # Running tests
@@ -20,6 +18,8 @@ steps:
   args: ['before-build']
   env:
   - 'CC_TEST_REPORTER_ID=be09c878390676aa4f4dcbc03853cb8dab1bf8e1cc66d40f09293d66982d81b5'
+  - 'GIT_COMMIT_SHA=$COMMIT_SHA'
+  - 'GIT_BRANCH=$BRANCH_NAME'
 - name: 'gcr.io/cloud-builders/yarn'
   args: ['run', 'test-with-coverage']
 - name: 'gcr.io/cloud-builders/git'
@@ -27,4 +27,6 @@ steps:
   args: ['after-build', '--debug']
   env:
   - 'CC_TEST_REPORTER_ID=be09c878390676aa4f4dcbc03853cb8dab1bf8e1cc66d40f09293d66982d81b5'
+  - 'GIT_COMMIT_SHA=$COMMIT_SHA'
+  - 'GIT_BRANCH=$BRANCH_NAME'
 images: ['gcr.io/leafy-grammar-222414/baglava:latest']
