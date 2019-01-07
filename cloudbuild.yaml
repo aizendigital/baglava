@@ -1,5 +1,8 @@
 steps:
 # Installing dependencies
+- name: 'gcr.io/cloud-builders/git'
+  entrypoint: 'sh'
+  args: ['env']
 - name: 'gcr.io/cloud-builders/yarn'
   args: ['install']
 # Running tests
