@@ -1,8 +1,26 @@
 steps:
+# Installing dependencies
 - name: 'gcr.io/cloud-builders/yarn'
   args: ['install']
+# Running tests
 - name: 'gcr.io/cloud-builders/yarn'
   args: ['run', 'test']
+# Building docker image
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '--tag=gcr.io/leafy-grammar-222414/baglava:latest', '.']  
+# Sending coverage reports to code climate
+- name: 'gcr.io/cloud-builders/curl'
+  args: ['https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64', '--output', 'cc-test-reporter']
+- name: 'ubuntu'
+  args: ['chmod', '+x', 'cc-test-reporter']
+- name: 'ubuntu'
+  args: ['./cc-test-reporter', 'before-build']
+  env:
+  - 'CC_TEST_REPORTER_ID=be09c878390676aa4f4dcbc03853cb8dab1bf8e1cc66d40f09293d66982d81b5'
+- name: 'gcr.io/cloud-builders/yarn'
+  args: ['run', 'test-with-coverage']
+- name: 'ubuntu'
+  args: ['./cc-test-reporter', 'after-build']
+  env:
+  - 'CC_TEST_REPORTER_ID=be09c878390676aa4f4dcbc03853cb8dab1bf8e1cc66d40f09293d66982d81b5'
 images: ['gcr.io/leafy-grammar-222414/baglava:latest']
