@@ -49,7 +49,7 @@ function JobController(mongoose) {
             ctx.throw(400);
         }
 
-        ctx.request.body.slug = await generateJobSlug(ctx.request.body.title);
+        ctx.request.body.slug = await generateModelSlug(ctx.request.body.title , jobModel);
 
         let job = await jobModel.
             createJob(ctx.request.body)
@@ -105,7 +105,7 @@ function JobController(mongoose) {
         }
 
         if (ctx.request.body.title) {
-            ctx.request.body.slug = await generateJobSlug(ctx.request.body.title);
+            ctx.request.body.slug = await utilFunctions.generateModelSlug(ctx.request.body.title, jobModel);
         }
 
 
@@ -142,18 +142,6 @@ function JobController(mongoose) {
 
     };
 
-    async function generateJobSlug(title, rand) {
-        let slug = slugify(title);
-
-        console.log(slug);
-        if (!slug) slug = Math.random().toString(36).substring(7);//TODO add persian support later
-        if (rand) slug = slug + '-' + rand;
-        if (!await jobModel.findOne({ slug: slug })) {
-            return slug;
-        } else {
-            return generateJobSlug(title, Math.random().toString(36).substring(7));
-        }
-    }
 
 }
 
