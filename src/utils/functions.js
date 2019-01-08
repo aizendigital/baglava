@@ -1,4 +1,4 @@
-module.exports.generateModelSlug = async function (title, model, rand) {
+module.exports = async function generateModelSlug (title, model, rand) {
     let slug = slugify(title);
     if (!slug) slug = Math.random().toString(36).substring(7);//TODO add persian support later
     if (rand) slug = slug + '-' + rand;

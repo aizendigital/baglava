@@ -8,7 +8,8 @@ const slugify = require('slugify');
 const Joi = require('joi');
 
 
-function JobController(mongoose) {
+
+class JobController{
 
 
     /**
@@ -17,7 +18,7 @@ function JobController(mongoose) {
      * Desc: get jobs list
      */
 
-    this.getJobs = async function (ctx, next) {
+    async getJobs (ctx, next) {
 
         let result = Joi.validate(ctx.query, jobQuerySchema.jobList);
         if (result.error !== null) {
@@ -42,7 +43,7 @@ function JobController(mongoose) {
      * Desc: create new Job
      */
 
-    this.createJob = async function (ctx, next) {
+    async createJob (ctx, next) {
 
         let result = Joi.validate(ctx.request.body, jobQuerySchema.job);
         if (result.error !== null) {
@@ -67,7 +68,7 @@ function JobController(mongoose) {
      * Desc: get job profile
      */
 
-    this.getJobProfile = async function (ctx, next) {
+    async getJobProfile (ctx, next) {
 
         let company = await companyModel.existsBySlug(ctx.params.companySlug);
         if (!company) {
@@ -89,7 +90,7 @@ function JobController(mongoose) {
      * Desc: update existing Job
      */
 
-    this.updateJob = async function (ctx, next) {
+    async updateJob (ctx, next) {
 
         let result = Joi.validate(ctx.request.body, jobQuerySchema.modifiedJob);
         if (result.error !== null) {
@@ -125,7 +126,7 @@ function JobController(mongoose) {
      * Desc: delete existing Job
      */
 
-    this.deleteJob = async function (ctx, next) {
+    async deleteJob (ctx, next) {
 
         let company = await companyModel.existsBySlug(ctx.params.companySlug);
         if (!company) {
@@ -144,5 +145,6 @@ function JobController(mongoose) {
 
 
 }
+
 
 module.exports = JobController;

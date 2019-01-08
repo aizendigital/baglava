@@ -16,7 +16,7 @@ app.use(async (ctx, next) => {
    } catch (err) {
      ctx.status = err.status || 500;
      ctx.body = {data: null, error: err};
-     ctx.app.emit('error', err, ctx);
+    //  ctx.app.emit('error', err, ctx);
    }
  });
 

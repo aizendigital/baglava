@@ -1,19 +1,19 @@
 'use strict';
 
 require('../../../domain/page/page');
+const pageModel = require('../../../domain/page/page');
 
-function PageController(mongoose) {
 
-    let pageModel = mongoose.model('Page');
 
+class PageController{
+    
     /**
      * Path: /api/v1/page
      * Method: Get
      */
 
-    this.getPage = async function (ctx, next) {
-        let slug = ctx.params.slug;
-        let page = await pageModel.findBySlug(slug).catch(err => {
+    async getPage (ctx, next) {
+        let page = await pageModel.findBySlug(ctx.params.slug).catch(err => {
             ctx.throw(404);
         });
 
@@ -25,5 +25,6 @@ function PageController(mongoose) {
     };
 
 }
+
 
 module.exports = PageController;

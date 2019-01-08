@@ -8,7 +8,7 @@ const utilFunctions = require('../../../utils/functions');
 const Joi = require('joi');
 
 
-function CompanyController(mongoose) {
+class CompanyController {
 
 
     /**
@@ -17,7 +17,7 @@ function CompanyController(mongoose) {
      * Desc: create new company
      */
 
-    this.createCompany = async function (ctx, next) {
+    async createCompany  (ctx, next) {
 
         let result = Joi.validate(ctx.request.body, companyQuerySchema.company);
 

@@ -3,15 +3,14 @@
 
 const Router = require('koa-router');
 const router = new Router();
-const mongoose = require('../../driver/mongo/mongo');
 const PageController = require('./controller/page');
 const JobController = require('./controller/job');
 const CompanyController = require('./controller/company');
 
 
-let pageController = new PageController(mongoose);
-let jobController = new JobController(mongoose);
-let companyController = new CompanyController(mongoose);
+let pageController = new PageController();
+let jobController = new JobController();
+let companyController = new CompanyController();
 
 
 router.get('/api/v1/page/:slug', pageController.getPage);
