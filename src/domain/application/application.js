@@ -11,7 +11,7 @@ let applicationQuestionSchema = mongoose.Schema({
 });
 
 let applicationSchema = mongoose.Schema({
-    resume: resumeSchema,
+    resume: { type: mongoose.Schema.Types.ObjectId, ref: 'Resume' },
     attachment: [attachmentSchema],//TODO
     questions: [applicationQuestionSchema],
     candidate: { type: mongoose.Schema.Types.ObjectId, ref: 'Candidate' },
