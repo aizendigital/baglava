@@ -9,6 +9,10 @@ const app = new Koa();
 const pino = require('koa-pino-logger')();
 const config = require('../../config/config.js');
 const router = require('./router.js');
+const mongoDriver = require('../../driver/mongo/mongo');
+
+mongoDriver();
+
 
 app.use(async (ctx, next) => {
    try {
@@ -29,5 +33,6 @@ app.on('error', (err, ctx) => {
    pino.logger.error(ctx + ":" + err);
 });
 
-pino.logger.info("Listening on " + config.bindAddress + ":" + config.bindPort)
+pino.logger.info("Listening on " + config.bindAddress + ":" + config.bindPort);
+
 app.listen(config.bindPort, config.bindAddress);
