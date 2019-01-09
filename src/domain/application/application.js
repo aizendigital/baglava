@@ -2,7 +2,7 @@
 
 const mongoose = require('mongoose');
 const resumeSchema = require('../resume/resume');
-const attachmentSchema = require('../resume/resume');
+const attachmentSchema = require('../attachment/attachment');
 
 
 let applicationQuestionSchema = mongoose.Schema({
