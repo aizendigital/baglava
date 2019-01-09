@@ -39,7 +39,7 @@ let candidateSchema = mongoose.Schema({
     firstName: String,
     lastName: String,
     website: String,
-    resume: resumeSchema,
+    resume: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Resume' }],
     contact: contactSchema,
     about: String,
     skills: [String],
