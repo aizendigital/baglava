@@ -4,18 +4,18 @@
 const mongoose = require('mongoose');
 const assert = require('assert');
 const sinon = require('sinon');
-const PageController = require('./page.js');
+const PageController = require('../page.js');
 
-require('../../../domain/page/page.js');
+require('../../../../domain/page/page.js');
 
 describe('Page controller methods', () => {
     /*
-    var Page = mongoose.model('Page');
-    var mongooseMock = sinon.mock(mongoose);
-    var pageMock = sinon.mock(Page);
+    let Page = mongoose.model('Page');
+    let mongooseMock = sinon.mock(mongoose);
+    let pageMock = sinon.mock(Page);
 
     it('#getPage', (done) => {
-        var page = {'title': 'TITLE', 'slug': 'SLUG', 'body': 'BODY'};
+        let page = {'title': 'TITLE', 'slug': 'SLUG', 'body': 'BODY'};
 
         pageMock
             .expects('findBySlug').withArgs('SLUG')
@@ -24,8 +24,8 @@ describe('Page controller methods', () => {
         mongooseMock
             .expects('model').withArgs('Page').returns(pageMock);
 
-        var pageController = new PageController(mongooseMock);
-        var ctx;
+        let pageController = new PageController(mongooseMock);
+        let ctx;
         pageController.findBySlug(ctx, next);
         mongooseMock.verify();
         mongooseMock.restore();

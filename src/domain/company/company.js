@@ -1,0 +1,57 @@
+
+'use strict';
+
+const mongoose = require('mongoose');
+
+const locationSchema = require('../location/locationSchema');
+
+const salarySchema = mongoose.Schema({
+    from: String,
+    to: String,
+    currency: String
+});
+
+const revenueSchema = mongoose.Schema({
+    from: String,
+    to: String,
+    currency: String
+});
+
+const interviewSchema = mongoose.Schema({
+    //change interview Schema for ATS
+    title: String,
+    application: String,
+    interview: String,
+    interviewQuestion: [String],
+    negotiation: String
+});
+
+let companySchema = mongoose.Schema({
+    title: { type: String, unique: true },
+    slug: String,
+    overview: String,
+    logo: String,
+    location: locationSchema,
+    website: String,
+    foundedDate: Date,
+    industry: String,
+    size: String,
+    photos: [String],
+    revenue: revenueSchema,
+    reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }],
+    salaries: [salarySchema],
+    interviews: [interviewSchema],
+    createdAt: { type: Date, default: Date.now }
+});
+
+
+companySchema.statics.existsBySlug = function (slug) {
+    return this.findOne({ slug: slug });
+}
+
+companySchema.statics.createCompany = async function (company) {
+    return this.create(company);
+}
+
+module.exports = mongoose.model('Company', companySchema);
+

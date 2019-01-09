@@ -3,7 +3,7 @@
 
 const mongoose = require('mongoose');
 
-var pageSchema = mongoose.Schema({
+let pageSchema = mongoose.Schema({
     title: String,
     slug: String,
     body: String,
@@ -11,8 +11,8 @@ var pageSchema = mongoose.Schema({
 });
 
 
-pageSchema.statics.findBySlug = function(slug, cb) {
-    return this.findOne({ slug: slug }, cb);
+pageSchema.statics.findBySlug = function (slug) {
+    return this.findOne({ slug: slug });
 }
 
-mongoose.model('Page', pageSchema);
+module.exports = mongoose.model('Page', pageSchema);
