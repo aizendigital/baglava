@@ -2,6 +2,8 @@
 
 const mongoose = require('mongoose');
 const resumeSchema = require('../resume/resume');
+const attachmentSchema = require('../resume/resume');
+
 
 let applicationQuestionSchema = mongoose.Schema({
     title: String,
@@ -9,7 +11,8 @@ let applicationQuestionSchema = mongoose.Schema({
 });
 
 let applicationSchema = mongoose.Schema({
-    resume: [resumeSchema],
+    resume: resumeSchema,
+    attachment: [attachmentSchema],//TODO
     questions: [applicationQuestionSchema],
     candidate: { type: mongoose.Schema.Types.ObjectId, ref: 'Candidate' },
     company: { type: mongoose.Schema.Types.ObjectId, ref: 'Company' }

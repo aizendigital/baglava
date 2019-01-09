@@ -2,6 +2,7 @@
 
 const mongoose = require('mongoose');
 const locationSchema = require('../location/locationSchema');
+const resumeSchema = require('../resume/resume');
 
 let schoolSchema = mongoose.Schema({
     location : locationSchema,
@@ -29,7 +30,6 @@ let educationSchema = mongoose.Schema({
     degree: String,
     filedOfStudy: String,
     description: String,
-    location: locationSchema,
     startDate: Date,
     endDate: Date
 });
@@ -39,6 +39,7 @@ let candidateSchema = mongoose.Schema({
     firstName: String,
     lastName: String,
     website: String,
+    resume: resumeSchema,
     contact: contactSchema,
     about: String,
     skills: [String],

@@ -8,22 +8,21 @@ const locationSchema = require('../location/locationSchema');
 const salarySchema = mongoose.Schema({
     from: String,
     to: String,
-    currency: String,
-    createdAt: { type: Date, default: Date.now },
+    currency: String
 });
 
 const revenueSchema = mongoose.Schema({
     from: String,
     to: String,
-    currency: String,
-    createdAt: { type: Date, default: Date.now },
+    currency: String
 });
 
 const interviewSchema = mongoose.Schema({
+    //change interview Schema for ATS
     title: String,
     application: String,
     interview: String,
-    interviewQuestion: String,
+    interviewQuestion: [String],
     negotiation: String
 });
 
