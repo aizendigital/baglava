@@ -9,9 +9,10 @@ const app = new Koa();
 const pino = require('koa-pino-logger')();
 const config = require('../../config/config.js');
 const router = require('./router.js');
-const mongoDriver = require('../../driver/mongo/mongo');
+const mysqlDriver = require('../../driver/mysql/mysql');
 
-mongoDriver();
+
+mysqlDriver();
 
 
 app.use(async (ctx, next) => {
