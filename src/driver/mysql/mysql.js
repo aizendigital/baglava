@@ -3,6 +3,7 @@
 
 const config = require('../../config/config.js');
 const mysql = require('promise-mysql');
+const pino = require('koa-pino-logger')();
 
 
 module.exports = async function () {
@@ -12,9 +13,9 @@ module.exports = async function () {
         password: config.mysqlPassword,
         database: config.mysqlDatabase
     }).then(() => {
-        console.log('mysql connected!');
+        pino.logger.info('mysql connected!');
     })
     .catch(err => {
-        console.log('mysql connection error',err);
+        pino.logger.info('mysql connection error',err);
     });
 };
