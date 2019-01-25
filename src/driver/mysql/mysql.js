@@ -2,20 +2,19 @@
 'use strict';
 
 const config = require('../../config/config.js');
-const mysql = require('promise-mysql');
-const pino = require('koa-pino-logger')();
+const mysql = require('mysql2/promise');
 
 
-module.exports = async function () {
-    await mysql.createConnection({
+
+module.exports =  function () {
+    return mysql.createPool({
         host: config.mysqlHost,
         user: config.mysqlUser,
         password: config.mysqlPassword,
-        database: config.mysqlDatabase
-    }).then(() => {
-        pino.logger.info('mysql connected!');
-    })
-    .catch(err => {
-        pino.logger.info('mysql connection error',err);
+        database: config.mysqlDatabase, 
+        waitForConnections: true,
+        connectionLimit: 10,
+        queueLimit: 0
     });
+
 };

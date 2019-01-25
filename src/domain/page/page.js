@@ -1,18 +1,15 @@
 
 'use strict';
-
-const mongoose = require('mongoose');
-
-let pageSchema = mongoose.Schema({
-    title: String,
-    slug: String,
-    body: String,
-    createdAt: { type: Date, default: Date.now },
-});
+const pino = require('koa-pino-logger')();
 
 
-pageSchema.statics.findBySlug = function (slug) {
-    return this.findOne({ slug: slug });
+class Page{
+    static async findBySlug(slug){
+        const [pages] = await global.db.query('Select * From page as p Where p.slug = :slug', { slug });
+        const page = pages[0];
+        return page;
+    }
 }
 
-module.exports = mongoose.model('Page', pageSchema);
+
+module.exports = Page;

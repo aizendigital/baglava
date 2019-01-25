@@ -7,7 +7,6 @@ const PageController = require('./controller/page');
 const JobController = require('./controller/job');
 const CompanyController = require('./controller/company');
 
-
 let pageController = new PageController();
 let jobController = new JobController();
 let companyController = new CompanyController();

@@ -12,7 +12,7 @@ class PageController{
      * Method: Get
      */
 
-    async getPage (ctx, next) {
+    async getPage (ctx) {
         let page = await pageModel.findBySlug(ctx.params.slug).catch(err => {
             ctx.throw(404);
         });

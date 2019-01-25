@@ -83,3 +83,6 @@ notes
 
 #mongo test JS
 mongo-test.js
+
+#package-lock
+package-lock.json
