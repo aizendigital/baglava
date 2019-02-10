@@ -9,7 +9,7 @@ const Joi = require('joi');
 
 
 
-class JobController{
+class JobController {
 
 
     /**
@@ -18,7 +18,7 @@ class JobController{
      * Desc: get jobs list
      */
 
-    async getJobs (ctx, next) {
+    async getJobs(ctx) {
 
         let result = Joi.validate(ctx.query, jobQuerySchema.jobList);
         if (result.error !== null) {
@@ -43,14 +43,14 @@ class JobController{
      * Desc: create new Job
      */
 
-    async createJob (ctx, next) {
+    async createJob(ctx, next) {
 
         let result = Joi.validate(ctx.request.body, jobQuerySchema.job);
         if (result.error !== null) {
             ctx.throw(400);
         }
 
-        ctx.request.body.slug = await generateModelSlug(ctx.request.body.title , jobModel);
+        ctx.request.body.slug = await generateModelSlug(ctx.request.body.title, jobModel);
 
         let job = await jobModel.
             createJob(ctx.request.body)
@@ -68,7 +68,7 @@ class JobController{
      * Desc: get job profile
      */
 
-    async getJobProfile (ctx, next) {
+    async getJobProfile(ctx, next) {
 
         let company = await companyModel.existsBySlug(ctx.params.companySlug);
         if (!company) {
@@ -90,7 +90,7 @@ class JobController{
      * Desc: update existing Job
      */
 
-    async updateJob (ctx, next) {
+    async updateJob(ctx, next) {
 
         let result = Joi.validate(ctx.request.body, jobQuerySchema.modifiedJob);
         if (result.error !== null) {
@@ -126,7 +126,7 @@ class JobController{
      * Desc: delete existing Job
      */
 
-    async deleteJob (ctx, next) {
+    async deleteJob(ctx, next) {
 
         let company = await companyModel.existsBySlug(ctx.params.companySlug);
         if (!company) {

@@ -74,3 +74,9 @@ jobSchema.statics.existsBySlugAndCompanyId = function (slug, companyId) {
 
 module.exports = mongoose.model('Job', jobSchema);
 
+// class Job{
+//     static async listJobs(q, limit, offset, order) {
+//         const [pages] = await global.db.query('SELECT * FROM job ORDER BY :order desc LIMIT :limit OFFSET :offset', { slug });
+        
+//     }
+// }
