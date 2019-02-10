@@ -4,7 +4,8 @@
 
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
-
+const views = require('koa-views');
+const path = require('path');
 const app = new Koa();
 const pino = require('koa-pino-logger')();
 const config = require('../../config/config.js');
@@ -13,6 +14,7 @@ const mysqlDriver = require('../../driver/mysql/mysql');
 
 
 global.connectionPool = mysqlDriver(); // put in global to pass to sub-apps
+app.use(views(path.join(__dirname, 'views'), { extension: 'html' }))
 
 app.use(async (ctx, next) => {
    try {

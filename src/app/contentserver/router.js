@@ -6,10 +6,17 @@ const router = new Router();
 const PageController = require('./controller/page');
 const JobController = require('./controller/job');
 const CompanyController = require('./controller/company');
+const AuthController = require('./controller/auth');
+
 
 let pageController = new PageController();
 let jobController = new JobController();
 let companyController = new CompanyController();
+let authController = new AuthController();
+
+router.get('/login', authController.getLogin);
+router.post('/register', authController.createUser);
+
 
 
 router.get('/api/v1/page/:slug', pageController.getPage);
