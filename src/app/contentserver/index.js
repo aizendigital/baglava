@@ -11,17 +11,25 @@ const pino = require('koa-pino-logger')();
 const config = require('../../config/config.js');
 const router = require('./router.js');
 const mysqlDriver = require('../../driver/mysql/mysql');
-
+const passport = require('../../security/passport');
+const session = require('koa-session');
 
 global.connectionPool = mysqlDriver(); // put in global to pass to sub-apps
-app.use(views(path.join(__dirname, 'views'), { extension: 'html' }))
+app.use(views(path.join(__dirname, 'views'), { extension: 'html' }));
+
+// sessions
+app.keys = ['your-session-secret'];
+app.use(session({}, app));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(async (ctx, next) => {
    try {
       await next();
    } catch (err) {
       ctx.status = err.status || 500;
-      ctx.body = { data: null, error: err };
+      ctx.body = { data: null, error: err.message };//TODO centrally error handling
       //  ctx.app.emit('error', err, ctx);
    }
 });
@@ -32,7 +40,7 @@ app.use(async function mysqlConnection(ctx, next) {
    try {
       // keep copy of ctx.state.db in global for access from models
       ctx.state.db = global.db = await global.connectionPool.getConnection();
-      ctx.state.db.connection.config.namedPlaceholders = true;
+      ctx.state.db.connection.config.namedPlaceholders = true;//TODO refactor
       // traditional mode ensures not null is respected for unsupplied fields, ensures valid JavaScript dates, etc
       // await ctx.state.db.query('SET SESSION sql_mode = "TRADITIONAL"');
       await next();

@@ -2,6 +2,8 @@
 'use strict';
 
 const Router = require('koa-router');
+const passport = require('koa-passport');
+
 const router = new Router();
 const PageController = require('./controller/page');
 const JobController = require('./controller/job');
@@ -14,8 +16,14 @@ let jobController = new JobController();
 let companyController = new CompanyController();
 let authController = new AuthController();
 
+router.get('/', authController.getLogin);
+
 router.get('/login', authController.getLogin);
-router.post('/register', authController.createUser);
+router.post('/login', passport.authenticate('local', {
+    successRedirect: '/',
+    failureRedirect: '/login'
+}));
+router.post('/register', authController.registerUser);
 
 
 
