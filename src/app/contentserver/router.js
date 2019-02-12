@@ -25,10 +25,8 @@ router.get('/login', auth.getLogin);
 router.post('/login', async (ctx) => {
     return passport.authenticate('local', (err, user, info, status) => {
         if (user === false) {
-            // ctx.body = { success: false };
-            ctx.throw(401);//TODO 
+            ctx.throw(401, new Error(info.message));//TODO 
         } else {
-            // ctx.body = { success: true };
             ctx.login(user);
             ctx.redirect('/');
         }

@@ -27,7 +27,7 @@ app.use(async (ctx, next) => {
       await next();
    } catch (err) {
       ctx.status = err.status || 500;
-      ctx.body = { data: null, error: err.message };//TODO centrally error handling
+      ctx.body = { data: null, error: err.message , status : false };//TODO centrally error handling
       //  ctx.app.emit('error', err, ctx);
    }
 });

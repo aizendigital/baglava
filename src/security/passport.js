@@ -28,14 +28,14 @@ passport.use(new LocalStrategy({
     console.log(user);
 
     if (!user) {
-      done(null, false)
+      done(null, false, { message: 'no such user' })
     }
     if (user && await userModel.checkPassword(password, user)) {
 
       done(null, user);
     } else {
 
-      done(null, false);
+      done(null, false , { message : 'bad password'});
     }
   }))
 
