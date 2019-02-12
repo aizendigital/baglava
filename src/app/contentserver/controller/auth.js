@@ -39,6 +39,11 @@ class AuthController {
         ctx.body = { data: { userId: userId }, error: null };
     }
 
+    async isAuthenticated(ctx, next) {
+        if (ctx.isAuthenticated()) return next();
+        ctx.redirect('/login');
+    }
+
 }
 
 module.exports = AuthController;

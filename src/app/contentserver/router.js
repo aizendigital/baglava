@@ -14,13 +14,13 @@ const AuthController = require('./controller/auth');
 let pageController = new PageController();
 let jobController = new JobController();
 let companyController = new CompanyController();
-let authController = new AuthController();
+let auth = new AuthController();
 
 router.get('/', async function (ctx) {
-    ctx.body = 'homepage: ' + JSON.stringify(ctx.state.user);
+    ctx.body = 'homepage: ' + JSON.stringify(ctx.state.user);//TODO test
 });
 
-router.get('/login', authController.getLogin);
+router.get('/login', auth.getLogin);
 
 router.post('/login', async (ctx) => {
     return passport.authenticate('local', (err, user, info, status) => {
@@ -41,7 +41,7 @@ router.get('/logout', function (ctx) {
     ctx.redirect('/login');
 });
 
-router.post('/register', authController.registerUser);
+router.post('/register', auth.registerUser);
 
 
 
@@ -55,7 +55,16 @@ router.delete('/api/v1/jobs/:companySlug/:jobSlug', jobController.deleteJob);
 router.post('/api/v1/companies', companyController.createCompany);
 
 
+// TODO : auth.isAuthenticated to protect routes for now!, roll access later
 
+// router.get('/public', function (ctx) {
+//     ctx.body = 'public route test';
+// });
+
+
+// router.get('/private', auth.isAuthenticated , function (ctx) {
+//     ctx.body = 'public route test';
+// });
 
 
 
