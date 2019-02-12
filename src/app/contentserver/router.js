@@ -54,7 +54,7 @@ router.post('/api/v1/companies', companyController.createCompany);
 
 
 // TODO : auth.isAuthenticated to protect routes for now!, roll access later
-
+//
 // router.get('/public', function (ctx) {
 //     ctx.body = 'public route test';
 // });
