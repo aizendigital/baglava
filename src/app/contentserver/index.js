@@ -21,8 +21,6 @@ app.use(views(path.join(__dirname, 'views'), { extension: 'html' }));
 app.keys = ['your-session-secret'];
 app.use(session({}, app));
 
-app.use(passport.initialize());
-app.use(passport.session());
 
 app.use(async (ctx, next) => {
    try {
@@ -55,11 +53,24 @@ app.use(async function mysqlConnection(ctx, next) {
    }
 });
 
+app.use(async function (ctx, next) {
+   ctx.flash = function (type, msg) {
+      ctx.session.flash = { type: type, message: msg };
+   }
+
+   await next();
+});
+
+
 
 app.use(pino)
    .use(bodyParser())
+   .use(passport.initialize())
+   .use(passport.session())
    .use(router.routes())
    .use(router.allowedMethods());
+
+
 
 app.on('error', (err, ctx) => {
    pino.logger.error(ctx + ':' + err);

@@ -2,7 +2,7 @@
 'use strict';
 
 const Router = require('koa-router');
-const passport = require('koa-passport');
+const passport = require('../../security/passport');
 
 const router = new Router();
 const PageController = require('./controller/page');
@@ -16,13 +16,31 @@ let jobController = new JobController();
 let companyController = new CompanyController();
 let authController = new AuthController();
 
-router.get('/', authController.getLogin);
+router.get('/', async function (ctx) {
+    ctx.body = 'homepage: ' + JSON.stringify(ctx.state.user);
+});
 
 router.get('/login', authController.getLogin);
-router.post('/login', passport.authenticate('local', {
-    successRedirect: '/',
-    failureRedirect: '/login'
-}));
+
+router.post('/login', async (ctx) => {
+    return passport.authenticate('local', (err, user, info, status) => {
+        if (user === false) {
+            // ctx.body = { success: false };
+            ctx.throw(401);//TODO 
+        } else {
+            // ctx.body = { success: true };
+            ctx.login(user);
+            ctx.redirect('/');
+        }
+    })(ctx)
+});
+
+
+router.get('/logout', function (ctx) {
+    ctx.logout();
+    ctx.redirect('/login');
+});
+
 router.post('/register', authController.registerUser);
 
 
@@ -35,6 +53,7 @@ router.put('/api/v1/jobs/:companySlug/:jobSlug', jobController.updateJob);
 router.delete('/api/v1/jobs/:companySlug/:jobSlug', jobController.deleteJob);
 
 router.post('/api/v1/companies', companyController.createCompany);
+
 
 
 

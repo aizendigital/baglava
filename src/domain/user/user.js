@@ -10,7 +10,7 @@ class User {
         let createdAt = new Date();
         let updatedAt = new Date();
         let [rows, fields] = await global.db.query('INSERT INTO USER(email, password, created_at, updated_at) VALUES(?,?,?,?)',
-            [ email, hashedPassword, createdAt, updatedAt ]);
+            [email, hashedPassword, createdAt, updatedAt]);
 
         return rows.insertId;
     }
@@ -20,17 +20,21 @@ class User {
         return rows.length !== 0;
     }
 
-    static async getUserByEmail(email) {
-        const [rows, fields] = await global.db.query('SELECT * FROM USER WHERE EMAIL = ?', [email]);
+    static async getUserByEmail(email, columns) {
+        columns = columns ? columns : '*';
+        const [rows, fields] =
+            await global.db.query('SELECT ?? FROM USER WHERE EMAIL = ?', [columns, email]);
+
         return rows[0];
     }
 
-    static async checkPassword(user, password){
+    static async checkPassword(password, user) {
         return bcrypt.compareSync(password, user.password);
     }
 
-    static async getUserById(email) {
-        const [rows, fields] = await global.db.query('SELECT * FROM USER WHERE ID = ?', [email]);
+    static async getUserById(email, columns) {
+        columns = columns ? columns : '*';
+        const [rows, fields] = await global.db.query('SELECT ?? FROM USER WHERE ID = ?', [columns, email]);
         return rows[0];
     }
 

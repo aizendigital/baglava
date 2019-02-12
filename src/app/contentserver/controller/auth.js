@@ -16,6 +16,9 @@ class AuthController {
      */
 
     async getLogin(ctx, next) {
+        if(ctx.isAuthenticated()){
+            ctx.redirect('/');
+        }
         await ctx.render('login-register');
     };
 
