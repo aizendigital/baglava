@@ -25,7 +25,7 @@ passport.use(new LocalStrategy({
   async function (email, password, done) {
 
     let user = await userModel.getUserByEmail(email, ['id', 'email', 'password']);
-    console.log(user);
+    // console.log(user);
 
     if (!user) {
       done(null, false, { message: 'no such user' })
