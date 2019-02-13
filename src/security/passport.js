@@ -1,5 +1,6 @@
 const passport = require('koa-passport')
 const userModel = require('../domain/user/user');
+const LocalStrategy = require('passport-local').Strategy;
 
 
 passport.serializeUser(function (user, done) {
@@ -17,7 +18,6 @@ passport.deserializeUser(async function (id, done) {
 
 })
 
-const LocalStrategy = require('passport-local').Strategy;
 passport.use(new LocalStrategy({
   usernameField: 'email',    // define the parameter in req.body that passport can use as username and password
   passwordField: 'password'

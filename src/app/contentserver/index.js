@@ -12,25 +12,11 @@ const config = require('../../config/config.js');
 const router = require('./router.js');
 const mysqlDriver = require('../../driver/mysql/mysql');
 const passport = require('../../security/passport');
+const mysqlSession = require('../../driver/mysql/session');
 const session = require('koa-session');
 
 global.connectionPool = mysqlDriver(); // put in global to pass to sub-apps
 app.use(views(path.join(__dirname, 'views'), { extension: 'html' }));
-
-// sessions
-app.keys = ['your-session-secret'];
-app.use(session({}, app));
-
-
-app.use(async (ctx, next) => {
-   try {
-      await next();
-   } catch (err) {
-      ctx.status = err.status || 500;
-      ctx.body = { data: null, error: err.message , status : false };//TODO centrally error handling
-      //  ctx.app.emit('error', err, ctx);
-   }
-});
 
 
 // set up MySQL connection
@@ -52,6 +38,25 @@ app.use(async function mysqlConnection(ctx, next) {
       throw e;
    }
 });
+
+
+
+// sessions
+app.keys = ['your-session-secret'];
+app.use(session({ store : mysqlSession(global.db) }, app));
+
+
+app.use(async (ctx, next) => {
+   try {
+      await next();
+   } catch (err) {
+      ctx.status = err.status || 500;
+      ctx.body = { data: null, error: err.message , status : false };//TODO centrally error handling
+      //  ctx.app.emit('error', err, ctx);
+   }
+});
+
+
 
 app.use(async function (ctx, next) {
    ctx.flash = function (type, msg) {
