@@ -4,10 +4,12 @@ const LocalStrategy = require('passport-local').Strategy;
 
 
 passport.serializeUser(function (user, done) {
+  console.log('serialize',user);
   done(null, user.id)
 })
 
 passport.deserializeUser(async function (id, done) {
+  console.log('deserilize',id);
 
   let user = await userModel.getUserById(id, ['id', 'email']);
   if (user) {
@@ -23,15 +25,14 @@ passport.use(new LocalStrategy({
   passwordField: 'password'
 },
   async function (email, password, done) {
+    console.log('strategy',{email , password});
 
-    let user = await userModel.getUserByEmail(email, ['id', 'email', 'password']);
-    // console.log(user);
+    let user = await userModel.getUserByEmail(email, ['id', 'email', 'password' , 'created_at']);
 
     if (!user) {
       done(null, false, { message: 'no such user' })
     }
     if (user && await userModel.checkPassword(password, user)) {
-
       done(null, user);
     } else {
 
