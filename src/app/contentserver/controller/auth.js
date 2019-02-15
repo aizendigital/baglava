@@ -16,6 +16,7 @@ class AuthController {
      */
 
     async getLogin(ctx, next) {
+        console.log(ctx.isAuthenticated());
         if(ctx.isAuthenticated()){
             ctx.redirect('/');
         }

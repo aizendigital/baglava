@@ -12,7 +12,9 @@ const config = require('../../config/config.js');
 const router = require('./router.js');
 const mysqlDriver = require('../../driver/mysql/mysql');
 const passport = require('../../security/passport');
-const mysqlSession = require('../../driver/mysql/session');
+
+const sessionManager = require('../../driver/mysql/session');
+
 const session = require('koa-session');
 
 global.connectionPool = mysqlDriver(); // put in global to pass to sub-apps
@@ -44,13 +46,11 @@ app.use(async function mysqlConnection(ctx, next) {
 
 // sessions
 app.keys = ['your-session-secret'];
-app.use(session({ key: 'sess-id', maxAge: 60 * 1000, ContextStore: mysqlSession, rolling: false, renew: false }, app));
+app.use(session({ key: 'sess-id' }, app));
 
 
 app.use(async (ctx, next) => {
    try {
-      // console.log('ctx.session : ', ctx.session);
-      // ctx.session.a = ctx.session.a ? (Number(ctx.session.a)) + 1 : 0;
       await next();
    } catch (err) {
       ctx.status = err.status || 500;
@@ -64,6 +64,7 @@ app.use(pino)
    .use(bodyParser())
    .use(passport.initialize())
    .use(passport.session())
+   .use(sessionManager)
    .use(router.routes())
    .use(router.allowedMethods());
 
