@@ -22,26 +22,10 @@ router.get('/', async function (ctx) {
 
 router.get('/login', auth.getLogin);
 
-router.post('/login', async (ctx) => {
-    console.log('login route');
-
-    return passport.authenticate('local', (err, user, info, status) => {
-        console.log('authenticate', { user });
-
-        if (user === false) {
-            ctx.throw(401, new Error(info.message));//TODO 
-        } else {
-            ctx.login(user);
-            ctx.redirect('/');
-        }
-    })(ctx)
-});
+router.post('/login', auth.login);
 
 
-router.get('/logout', function (ctx) {
-    ctx.logout();
-    ctx.redirect('/login');
-});
+router.get('/logout', auth.logout);
 
 router.post('/register', auth.registerUser);
 

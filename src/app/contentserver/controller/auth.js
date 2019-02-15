@@ -17,7 +17,7 @@ class AuthController {
 
     async getLogin(ctx, next) {
         console.log(ctx.isAuthenticated());
-        if(ctx.isAuthenticated()){
+        if (ctx.isAuthenticated()) {
             ctx.redirect('/');
         }
         await ctx.render('login-register');
@@ -43,6 +43,22 @@ class AuthController {
     async isAuthenticated(ctx, next) {
         if (ctx.isAuthenticated()) return next();
         ctx.redirect('/login');
+    }
+
+    async logout(ctx) {
+        ctx.logout();
+        ctx.redirect('/login');
+    }
+
+    async login(ctx) {
+        return passport.authenticate('local', (err, user, info, status) => {
+            if (user === false) {
+                ctx.throw(401, new Error(info.message));//TODO 
+            } else {
+                ctx.login(user);
+                ctx.redirect('/');
+            }
+        })(ctx)
     }
 
 }
