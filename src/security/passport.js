@@ -1,16 +1,16 @@
 const passport = require('koa-passport')
-const userModel = require('../domain/user/user');
+const User = require('../domain/user/user');
 const LocalStrategy = require('passport-local').Strategy;
 
 
 passport.serializeUser(function (user, done) {
-  console.log('serialize',user);
+  console.log('serialize', user);
   done(null, user.id)
 })
 
 passport.deserializeUser(async function (id, done) {
-  console.log('deserilize',id);
-
+  console.log('deserilize', id);
+  userModel = new User(global.db);
   let user = await userModel.getUserById(id, ['id', 'email']);
   if (user) {
     done(null, user);
@@ -25,9 +25,11 @@ passport.use(new LocalStrategy({
   passwordField: 'password'
 },
   async function (email, password, done) {
-    console.log('strategy',{email , password});
+    console.log('strategy', { email, password });
+    console.log(global.db);
+    userModel = new User(global.db);
 
-    let user = await userModel.getUserByEmail(email, ['id', 'email', 'password' , 'created_at']);
+    let user = await userModel.getUserByEmail(email, ['id', 'email', 'password', 'created_at']);
 
     if (!user) {
       done(null, false, { message: 'no such user' })
@@ -36,7 +38,7 @@ passport.use(new LocalStrategy({
       done(null, user);
     } else {
 
-      done(null, false , { message : 'bad password'});
+      done(null, false, { message: 'bad password' });
     }
   }))
 

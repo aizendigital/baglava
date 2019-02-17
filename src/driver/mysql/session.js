@@ -8,6 +8,7 @@ module.exports = async function (ctx, next) {
         await session.updateLastVisitByStateId(ctx.session.stateId);
         const stateData = await session.getByStateId(ctx.session.stateId);
         if (!stateData.user_id && ctx.state.user) {
+            //first time authenticated
             await session.updateUserIdByStateId(ctx.session.stateId, ctx.state.user.id);
         }
         if (!stateData.active) {

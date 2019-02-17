@@ -1,6 +1,6 @@
 'use strict';
 
-const userModel = require('../../../domain/user/user');
+const User = require('../../../domain/user/user');
 const userValidationSchema = require('../../../domain/user/validation');
 const passport = require('../../../security/passport');
 
@@ -25,7 +25,7 @@ class AuthController {
 
 
     async registerUser(ctx, next) {
-
+        const userModel = new User(ctx.state.db);
         let result = Joi.validate(ctx.request.body, userValidationSchema.createUser);
         if (result.error !== null) {
             ctx.throw(result.error);
@@ -51,6 +51,11 @@ class AuthController {
     }
 
     async login(ctx) {
+        const userModel = new User(ctx.state.db);
+        let result = Joi.validate(ctx.request.body, userValidationSchema.createUser);
+        if (result.error !== null) {
+            ctx.throw(result.error);
+        }
         return passport.authenticate('local', (err, user, info, status) => {
             if (user === false) {
                 ctx.throw(401, new Error(info.message));//TODO 
