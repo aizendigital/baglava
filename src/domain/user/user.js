@@ -7,7 +7,7 @@ const bcrypt = require('bcrypt');
 class User {
 
 
-    constructor(connection){
+    constructor(connection) {
         this.connection = connection;
     }
 
@@ -15,21 +15,27 @@ class User {
         let hashedPassword = bcrypt.hashSync(password, 10);//TODO salt
         let createdAt = new Date();
         let updatedAt = new Date();
-        let [rows, fields] = await this.connection.query('INSERT INTO USER(email, password, created_at, updated_at) VALUES(?,?,?,?)',
+        let [rows, fields] = await this.connection.query('INSERT INTO user(email, password, created_at, updated_at) VALUES(?,?,?,?)',
             [email, hashedPassword, createdAt, updatedAt]);
 
         return rows.insertId;
     }
 
+    async fastRegister(email, companyId) {
+        let [rows, fields] = await this.connection.query('INSERT INTO user(email, company_id, created_at, updated_at) VALUES(?,?,?,?)',
+            [email, companyId, new Date(), new Date()]);
+        return rows.insertId;
+    }
+
     async checkExistUserByEmail(email) {
-        const [rows, fields] = await this.connection.query('SELECT * FROM USER WHERE EMAIL = ?', [email]);
+        const [rows, fields] = await this.connection.query('SELECT * FROM user WHERE email = ?', [email]);
         return rows.length !== 0;
     }
 
     async getUserByEmail(email, columns) {
         columns = columns ? columns : '*';
         const [rows, fields] =
-            await this.connection.query('SELECT ?? FROM USER WHERE EMAIL = ?', [columns, email]);
+            await this.connection.query('SELECT ?? FROM user WHERE email = ?', [columns, email]);
 
         return rows[0];
     }

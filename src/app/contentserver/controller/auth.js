@@ -1,6 +1,8 @@
 'use strict';
 
 const User = require('../../../domain/user/user');
+const Company = require('../../../domain/company/company');
+
 const userValidationSchema = require('../../../domain/user/validation');
 const passport = require('../../../security/passport');
 
@@ -23,14 +25,34 @@ class AuthController {
         await ctx.render('login-register');
     };
 
+    async fastRegister(ctx, next) {
+        //validate input , email , company name 
+        let result = Joi.validate(ctx.request.body, userValidationSchema.fastRegister);
+        if (result.error) {
+            ctx.throw(result.error);
+        }
+
+        const userModel = new User(ctx.state.db);
+        if (await userModel.checkExistUserByEmail(ctx.request.body.email)) {
+            ctx.throw('user exists');
+        }
+
+        const companyModel = new Company(ctx.state.db);
+        const companyId = await companyModel.createCompany(ctx.request.body.companyName);
+        let userId = await userModel.fastRegister(ctx.request.body.email, companyId);
+
+        ctx.body = { data: { userId: userId }, error: null };
+
+
+    }
 
     async registerUser(ctx, next) {
-        const userModel = new User(ctx.state.db);
         let result = Joi.validate(ctx.request.body, userValidationSchema.createUser);
         if (result.error !== null) {
             ctx.throw(result.error);
         }
 
+        const userModel = new User(ctx.state.db);
 
         if (await userModel.checkExistUserByEmail(ctx.request.body.email)) {
             ctx.throw('user exists');//TODO central error message
@@ -51,7 +73,6 @@ class AuthController {
     }
 
     async login(ctx) {
-        const userModel = new User(ctx.state.db);
         let result = Joi.validate(ctx.request.body, userValidationSchema.createUser);
         if (result.error !== null) {
             ctx.throw(result.error);

@@ -29,18 +29,17 @@ const interviewSchema = mongoose.Schema({
 let companySchema = mongoose.Schema({
     title: { type: String, unique: true },
     slug: String,
-    overview: String,
-    logo: String,
-    location: locationSchema,
     website: String,
+    phoneNumber: String,
+    logo: String,
+    profile: String,
+    location: locationSchema,
     foundedDate: Date,
     industry: String,
     size: String,
     photos: [String],
     revenue: revenueSchema,
-    reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }],
     salaries: [salarySchema],
-    interviews: [interviewSchema],
     createdAt: { type: Date, default: Date.now }
 });
 
@@ -53,5 +52,20 @@ companySchema.statics.createCompany = async function (company) {
     return this.create(company);
 }
 
-module.exports = mongoose.model('Company', companySchema);
+class Company {
+    constructor(connection) {
+        this.connection = connection;
+    }
+
+    async  createCompany(companyName) {
+
+        let [rows, fields] = await this.connection.query('INSERT INTO company(name, created_at, updated_at) VALUES(?,?,?)',
+            [companyName, new Date(), new Date()]);
+
+        return rows.insertId;
+    }
+}
+
+
+module.exports = Company;
 

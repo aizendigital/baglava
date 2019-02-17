@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `Aizen_db`.`USER` (
+CREATE TABLE IF NOT EXISTS `Aizen_db`.`user` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `company_id` INT NOT NULL,
   `username` CHAR(45) NOT NULL,

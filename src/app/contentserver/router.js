@@ -23,11 +23,11 @@ router.get('/login', auth.getLogin);
 
 router.post('/login', auth.login);
 
-
 router.get('/logout', auth.logout);
 
 router.post('/register', auth.registerUser);
 
+router.post('/fast_register', auth.fastRegister);
 
 
 router.get('/api/v1/page/:slug', pageController.getPage);
