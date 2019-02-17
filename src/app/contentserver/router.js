@@ -2,7 +2,6 @@
 'use strict';
 
 const Router = require('koa-router');
-const passport = require('../../security/passport');
 
 const router = new Router();
 const PageController = require('./controller/page');

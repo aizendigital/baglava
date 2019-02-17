@@ -33,6 +33,8 @@ class Session {
     async insertNewState(stateId, userId, data, lastVisit, active) {
         let [rows, fields] = await this.connection.query('INSERT INTO sql_session(state_id, user_id, data, last_visit, created_at , active) VALUES(?,?,?,?,?,?)'
             , [stateId, userId, JSON.stringify(data), lastVisit, new Date(), active]);
+
+        return [rows, fields];
     }
 
 

@@ -2,7 +2,7 @@
 
 const userModel = require('../../../domain/user/user');
 const userValidationSchema = require('../../../domain/user/validation');
-const LocalStrategy = require('passport-local').Strategy
+const passport = require('../../../security/passport');
 
 const Joi = require('joi');
 
