@@ -8,6 +8,7 @@ let cfg = {
     mysqlUser : process.env.MYSQL_USER ? process.env.MYSQL_USER : 'root',
     mysqlPassword : process.env.MYSQL_PASSWORD ? process.env.MYSQL_PASSWORD : 'root',
     mysqlDatabase : process.env.MYSQL_DATABASE ? process.env.MYSQL_DATABASE : 'Aizen_db',
+    sessionSecretKey : ['your-session-secret']
 
 };
 

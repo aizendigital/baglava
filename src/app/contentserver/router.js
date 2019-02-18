@@ -15,11 +15,6 @@ let jobController = new JobController();
 let companyController = new CompanyController();
 let auth = new AuthController();
 
-router.get('/', async function (ctx) {
-    ctx.body = 'homepage: ' + JSON.stringify(ctx.state.user);//TODO test
-});
-
-router.get('/login', auth.getLogin);
 
 router.post('/login', auth.login);
 

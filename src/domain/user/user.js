@@ -22,14 +22,14 @@ class User {
     }
 
     async fastRegister(email, companyId) {
-        let [rows, fields] = await this.connection.query('INSERT INTO user(email, company_id, created_at, updated_at) VALUES(?,?,?,?)',
-            [email, companyId, new Date(), new Date()]);
+        let [rows, fields] = await this.connection.query('INSERT INTO user(email, company_id, active, created_at, updated_at) VALUES(?,?,?,?,?)',
+            [email, companyId, false, new Date(), new Date()]);
         return rows.insertId;
     }
 
     async checkExistUserByEmail(email) {
         const [rows, fields] = await this.connection.query('SELECT * FROM user WHERE email = ?', [email]);
-        return rows.length !== 0;
+        return rows[0];
     }
 
     async getUserByEmail(email, columns) {

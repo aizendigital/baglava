@@ -4,11 +4,10 @@
 
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
-const views = require('koa-views');
 const path = require('path');
 const app = new Koa();
 const pino = require('koa-pino-logger')();
-const config = require('../../config/config.js');
+const config = require('../../config/config');
 const router = require('./router.js');
 const mysqlDriver = require('../../driver/mysql/mysql');
 const passport = require('../../security/passport');
@@ -18,7 +17,6 @@ const sessionManager = require('../../driver/mysql/session');
 const session = require('koa-session');
 
 global.connectionPool = mysqlDriver(); // put in global to pass to sub-apps
-app.use(views(path.join(__dirname, 'views'), { extension: 'html' }));
 
 
 // set up MySQL connection
@@ -45,7 +43,7 @@ app.use(async function mysqlConnection(ctx, next) {
 });
 
 // sessions
-app.keys = ['your-session-secret'];
+app.keys = config.sessionSecretKey;
 app.use(session({ key: 'sess-id' }, app));
 
 

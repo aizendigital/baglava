@@ -17,13 +17,6 @@ class AuthController {
      * Desc: get login page
      */
 
-    async getLogin(ctx, next) {
-        console.log(ctx.isAuthenticated());
-        if (ctx.isAuthenticated()) {
-            ctx.redirect('/');
-        }
-        await ctx.render('login-register');
-    };
 
     async fastRegister(ctx, next) {
         //validate input , email , company name 
@@ -33,12 +26,24 @@ class AuthController {
         }
 
         const userModel = new User(ctx.state.db);
-        if (await userModel.checkExistUserByEmail(ctx.request.body.email)) {
+        const user = await userModel.checkExistUserByEmail(ctx.request.body.email);
+
+        if (user && user.active) {
             ctx.throw('user exists');
         }
 
+        if(user && !user.active){
+            ctx.throw('user is not active');
+        }
+
         const companyModel = new Company(ctx.state.db);
+        
+        if (await companyModel.checkCompanyExistOrOwnerIsActive(ctx.request.body.companyName)) {
+            ctx.throw('company name exists');
+        }
+        
         const companyId = await companyModel.createCompany(ctx.request.body.companyName);
+        
         let userId = await userModel.fastRegister(ctx.request.body.email, companyId);
 
         ctx.body = { data: { userId: userId }, error: null };
@@ -64,12 +69,12 @@ class AuthController {
 
     async isAuthenticated(ctx, next) {
         if (ctx.isAuthenticated()) return next();
-        ctx.redirect('/login');
+        ctx.throw('not authorized');
     }
 
     async logout(ctx) {
         ctx.logout();
-        ctx.redirect('/login');
+        ctx.body = { data: { message: 'successfully logged out' }, error: null };
     }
 
     async login(ctx) {
@@ -82,7 +87,7 @@ class AuthController {
                 ctx.throw(401, new Error(info.message));//TODO 
             } else {
                 ctx.login(user);
-                ctx.redirect('/');
+                ctx.body = { data: { message: 'successfully logged in' }, error: null };
             }
         })(ctx)
     }
