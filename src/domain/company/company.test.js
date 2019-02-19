@@ -5,11 +5,13 @@ const assert = require('assert');
 const sinon = require('sinon');
 const mysql = require('mysql2/promise');
 const Company = require('./company');
+const connectionPool = require('../../driver/mysql/mysql');
 
-
-describe('Page model methods', () => {
-    let mysqlMock = sinon.mock(mysql);
-
+describe('Company model methods', async () => {
+    
+    
+    let mysqlConection = await connectionPool().getConnection();
+    let mysqlMock = sinon.mock(mysqlConection);
     it('#createCompany', (done) => {
         let mysqlConnMock = mysqlMock
         mysqlConnMock
@@ -19,6 +21,7 @@ describe('Page model methods', () => {
         let company = new Company(mysqlConnMock);
         
         company.createCompany("NAME");
+
         // PageMock
         //     .expects('findOne').withArgs({ slug: 'SLUG' })
         //     .resolves('RESULT');

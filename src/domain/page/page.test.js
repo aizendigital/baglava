@@ -6,10 +6,10 @@ const sinon = require('sinon');
 const Page = require('../page/page');
 
 
-describe('Page model methods', () => {
+describe('Page model methods', async () => {
     let PageMock = sinon.mock(Page);
 
-    it('#findBySlug', (done) => {
+    it('#sampleTest', (done) => {
         // PageMock
         //     .expects('findOne').withArgs({ slug: 'SLUG' })
         //     .resolves('RESULT');
