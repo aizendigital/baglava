@@ -12,16 +12,15 @@ describe('Company model methods', async () => {
     const mysqlConection = new MysqlConection();
 
     let mysqlMock = sinon.mock(mysqlConection);
-    console.log(mysqlMock);
+  //  console.log(mysqlMock);
     it('#createCompany', (done) => {
-        let mysqlConnMock = mysqlMock
-        mysqlConnMock
+        mysqlMock
             .expects('query')
             .withArgs('INSERT INTO company(name, created_at, updated_at) VALUES(?,?,?)',["NAME"])
             .resolves([{insertId:7}, null]);
-        let company = new Company(mysqlConnMock);
+        let company = new Company(mysqlMock);
         
-        console.log(mysqlConnMock);
+//        console.log(mysqlConnMock);
 
 
         company.createCompany("NAME");

@@ -7,12 +7,12 @@ class Mysql2Interface extends EventEmitter {
 
     constructor() {
         super();
-        this.query = new Promise(function (resolve, reject) {
-            resolve('1');
-        });
-        // this.query = () => {
-
-        // }
+  //      this.query = new Promise(function (resolve, reject) {
+  //          resolve('1');
+  //      });
+//         this.query = () => {
+//
+  //       }
         
     }
 
@@ -21,9 +21,9 @@ class Mysql2Interface extends EventEmitter {
 
     }
 
-    // query(sql, args) {
-    //     return new Promise();
-    // }
+    async query(sql, args) {
+       return [{insertId:null}, null];
+    }
 
     execute(sql, values) {
 
