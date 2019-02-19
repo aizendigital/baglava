@@ -3,15 +3,16 @@
 
 const assert = require('assert');
 const sinon = require('sinon');
-const mysql = require('mysql2/promise');
 const Company = require('./company');
-const connectionPool = require('../../driver/mysql/mysql');
+const MysqlConection = require('../../driver/mysql/mysql2TestInterface')
+
 
 describe('Company model methods', async () => {
-    
-    
-    let mysqlConection = await connectionPool().getConnection();
+
+    const mysqlConection = new MysqlConection();
+
     let mysqlMock = sinon.mock(mysqlConection);
+    console.log(mysqlMock);
     it('#createCompany', (done) => {
         let mysqlConnMock = mysqlMock
         mysqlConnMock
@@ -20,6 +21,9 @@ describe('Company model methods', async () => {
             .resolves([{insertId:7}, null]);
         let company = new Company(mysqlConnMock);
         
+        console.log(mysqlConnMock);
+
+
         company.createCompany("NAME");
 
         // PageMock

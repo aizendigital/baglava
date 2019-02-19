@@ -6,7 +6,7 @@ class Company {
         this.connection = connection;
     }
 
-    async  createCompany(companyName) {
+    async createCompany(companyName) {
 
         let [rows, fields] = await this.connection.query('INSERT INTO company(name, created_at, updated_at) VALUES(?,?,?)',
             [companyName, new Date(), new Date()]);
