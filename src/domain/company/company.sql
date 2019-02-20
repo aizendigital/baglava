@@ -7,8 +7,8 @@ CREATE TABLE IF NOT EXISTS `Aizen_db`.`company` (
   `size` INT NULL,
   `foundDate` DATETIME NULL,
   `industry` CHAR(100) NULL,
-  `created_at` DATETIME NOT NULL,
-  `updated_at` DATETIME NOT NULL,
+  `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME ON UPDATE CURRENT_TIMESTAMP,
   `location_id` INT NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB

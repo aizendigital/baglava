@@ -32,18 +32,18 @@ class AuthController {
             ctx.throw('user exists');
         }
 
-        if(user && !user.active){
+        if (user && !user.active) {
             ctx.throw('user is not active');
         }
 
         const companyModel = new Company(ctx.state.db);
-        
+
         if (await companyModel.checkCompanyExistOrOwnerIsActive(ctx.request.body.companyName)) {
             ctx.throw('company name exists');
         }
-        
+
         const companyId = await companyModel.createCompany(ctx.request.body.companyName);
-        
+
         let userId = await userModel.fastRegister(ctx.request.body.email, companyId);
 
         ctx.body = { data: { userId: userId }, error: null };
