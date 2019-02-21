@@ -25,34 +25,54 @@ describe('Company model methods', async () => {
 
     describe('#.createCompany', () => {
 
-        const queryValues = [
+        const validQueryValues = [
             { query: 'INSERT INTO company(name) VALUES(?)', values: ["NAME"], input: "NAME" },
-            { query: 'INSERT INTO company(name) VALUES(?)', values: ["نام"], input: "نام" },
-            // { query: 'INSERT INTO company(name) VALUES(?)', values: null, input: null },
-            { query: 'INSERT INTO company(name) VALUES(?)', values: [""], input: "" },
+            { query: 'INSERT INTO company(name) VALUES(?)', values: ["نام"], input: "نام" }
 
         ];
-        for (let i = 0; i < queryValues.length; i++) {
-            it('#createCompany ' + queryValues[i].input, (done) => {
+        for (let i = 0; i < validQueryValues.length; i++) {
+            it('#createCompany ' + validQueryValues[i].input, (done) => {
                 mysqlMock
                     .expects('query')
-                    .withArgs(queryValues[i].query, queryValues[i].values)
+                    .withArgs(validQueryValues[i].query, validQueryValues[i].values)
                     .resolves([{ insertId: 11 }, null])
                     ;
-                company.createCompany(queryValues[i].input);
+                company.createCompany(validQueryValues[i].input);
                 mysqlMock.verify();
                 done();
             });
         }
+
+        const invalidQueryValues = [
+            { query: 'INSERT INTO company(name) VALUES(?)', values: null, input: null },
+            { query: 'INSERT INTO company(name) VALUES(?)', values: undefined, input: undefined },
+            { query: 'INSERT INTO company(name) VALUES(?)', values: [""], input: "" }
+        ];
+        for (let i = 0; i < invalidQueryValues.length; i++) {
+            it('#createCompany ' + invalidQueryValues[i].input, (done) => {
+                mysqlMock
+                    .expects('query')
+                    .withArgs(invalidQueryValues[i].query, invalidQueryValues[i].values)
+                    .throws()
+                    ;
+                company.createCompany(invalidQueryValues[i].input);
+                mysqlMock.verify();
+                done();
+            });
+        }
+
+
+
+
     });
 
     describe('#.checkCompanyExistOrOwnerIsActive', () => {
 
         const queryValues = [
-            { query: 'SELECT c.id FROM company as c RIGHT JOIN user as u ON c.id = u.company_id WHERE u.active = true and c.name = ?', values: ["NAME"], input: "NAME" },
-            { query: 'SELECT c.id FROM company as c RIGHT JOIN user as u ON c.id = u.company_id WHERE u.active = true and c.name = ?', values: [""], input: "" },
-            { query: 'SELECT c.id FROM company as c RIGHT JOIN user as u ON c.id = u.company_id WHERE u.active = true and c.name = ?', values: ["س"], input: "س" },
-            
+            { query: 'SELECT c.id FROM company as c LEFT JOIN user as u ON c.id = u.company_id WHERE u.active = true and c.name = ?', values: ["NAME"], input: "NAME" },
+            { query: 'SELECT c.id FROM company as c LEFT JOIN user as u ON c.id = u.company_id WHERE u.active = true and c.name = ?', values: [""], input: "" },
+            { query: 'SELECT c.id FROM company as c LEFT JOIN user as u ON c.id = u.company_id WHERE u.active = true and c.name = ?', values: ["س"], input: "س" },
+
 
         ];
         for (let i = 0; i < queryValues.length; i++) {

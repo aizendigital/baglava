@@ -46,6 +46,8 @@ class AuthController {
 
         let userId = await userModel.fastRegister(ctx.request.body.email, companyId);
 
+        
+
         ctx.body = { data: { userId: userId }, error: null };
 
 
