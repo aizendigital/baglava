@@ -20,8 +20,6 @@ router.post('/login', auth.login);
 
 router.get('/logout', auth.logout);
 
-router.post('/register', auth.registerUser);
-
 router.post('/fast_register', auth.fastRegister);
 
 
