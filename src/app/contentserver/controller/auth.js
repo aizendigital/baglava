@@ -19,7 +19,6 @@ class AuthController {
 
 
     async fastRegister(ctx, next) {
-        //validate input , email , company name 
         let result = Joi.validate(ctx.request.body, userValidationSchema.fastRegister);
         if (result.error) {
             ctx.throw(result.error);
@@ -51,22 +50,6 @@ class AuthController {
         ctx.body = { data: { userId: userId }, error: null };
 
 
-    }
-
-    async registerUser(ctx, next) {
-        let result = Joi.validate(ctx.request.body, userValidationSchema.createUser);
-        if (result.error !== null) {
-            ctx.throw(result.error);
-        }
-
-        const userModel = new User(ctx.state.db);
-
-        if (await userModel.checkExistUserByEmail(ctx.request.body.email)) {
-            ctx.throw('user exists');//TODO central error message
-        }
-
-        let userId = await userModel.createUser(ctx.request.body.email, ctx.request.body.password);
-        ctx.body = { data: { userId: userId }, error: null };
     }
 
     async isAuthenticated(ctx, next) {

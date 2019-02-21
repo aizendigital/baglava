@@ -22,32 +22,7 @@ describe('User model methods', async () => {
     afterEach(() => {
         mysqlMock.restore();
     });
-
-    // describe('#.createUser', () => {
-
-    //     const valid = [
-    //         {
-    //             query: 'INSERT INTO user(email, password) VALUES(?,?)', values: ['a@a.com',
-    //                 '$2y$10$F/jCSONcUN8zPnQSLJ/ineqPmUfdxhsp1d01aueJYNSnUx0dig9Ey'],
-    //             input: { email : 'a@a.com', password: '11111111'}
-    //         },
-    //         // { query: 'INSERT INTO user(email, password) VALUES(?,?)', values: [email, hashedPassword], input: [email, password] },
-    //     ];
-    //     for (let i = 0; i < valid.length; i++) {
-    //         it('#createUser ' + valid[i].input, (done) => {
-    //             mysqlMock
-    //                 .expects('query')
-    //                 .withArgs(valid[i].query, valid[i].values)
-    //                 .resolves([{ insertId: 11 }, null])
-    //                 ;
-    //             user.createUser(valid[i].input.email , valid[i].input.password);
-    //             mysqlMock.verify();
-    //             done();
-    //         });
-    //     }
-
-    // });
-
+    
     describe('#.fastRegister', () => {
 
         const valid = [
@@ -93,8 +68,6 @@ describe('User model methods', async () => {
         }
 
     });
-
-    
 
 });
 
