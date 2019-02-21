@@ -2,6 +2,7 @@
 'use strict';
 
 const bcrypt = require('bcrypt');
+const Joi = require('joi');
 
 
 class User {
@@ -13,12 +14,11 @@ class User {
 
     async createUser(email, password) {
         if (!email || !password) throw new exception('invalid createUser Input', 'model');
-
         let hashedPassword = bcrypt.hashSync(password, 10);//TODO salt
         let [rows, fields] = await this.connection.query('INSERT INTO user(email, password) VALUES(?,?)',
             [email, hashedPassword]);
 
-        return rows.insertId;
+        return rows.insertId; 
     }
 
     async fastRegister(email, companyId) {
