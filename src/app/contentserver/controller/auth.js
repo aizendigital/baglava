@@ -63,7 +63,7 @@ class AuthController {
             ctx.throw('user exists');//TODO central error message
         }
 
-        let userId = await userModel.createUser(ctx.request.body);
+        let userId = await userModel.createUser(ctx.request.body.email, ctx.request.body.password);
         ctx.body = { data: { userId: userId }, error: null };
     }
 

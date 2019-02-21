@@ -4,7 +4,7 @@
 const assert = require('assert');
 const sinon = require('sinon');
 const Company = require('./company');
-const mysqlInterface = require('../../driver/mysql/mysql2TestInterface')
+const mysqlInterface = require('../../test/mysql2TestInterface')
 
 
 describe('Company model methods', async () => {
@@ -35,7 +35,7 @@ describe('Company model methods', async () => {
         for (let i = 0; i < queryValues.length; i++) {
             it('#createCompany ' + queryValues[i].input, (done) => {
                 mysqlMock
-                    .expects("query")
+                    .expects('query')
                     .withArgs(queryValues[i].query, queryValues[i].values)
                     .resolves([{ insertId: 11 }, null])
                     ;
@@ -58,7 +58,7 @@ describe('Company model methods', async () => {
         for (let i = 0; i < queryValues.length; i++) {
             it('#checkCompanyExistOrOwnerIsActive ' + queryValues[i].input, (done) => {
                 mysqlMock
-                    .expects("query")
+                    .expects('query')
                     .withArgs(queryValues[i].query, queryValues[i].values)
                     .resolves([{ insertId: 11 }, null])
                     ;
