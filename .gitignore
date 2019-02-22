@@ -86,3 +86,6 @@ mongo-test.js
 
 #package-lock
 package-lock.json
+
+#out
+out.txt

@@ -1,4 +1,4 @@
-module.exports = async function generateModelSlug (title, model, rand) {
+module.exports.generateModelSlug = async function  (title, model, rand) {
     let slug = slugify(title);
     if (!slug) slug = Math.random().toString(36).substring(7);//TODO add persian support later
     if (rand) slug = slug + '-' + rand;
@@ -7,4 +7,9 @@ module.exports = async function generateModelSlug (title, model, rand) {
     } else {
         return generateModelSlug(title, model, Math.random().toString(36).substring(7));
     }
+}
+
+module.exports.uuid = function(){
+    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+
 }
