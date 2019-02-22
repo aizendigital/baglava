@@ -48,7 +48,7 @@ class User {
     }
 
     async checkExistUserByEmail(email) {
-        let validate = Joi.validate({ email, companyId }, {
+        let validate = Joi.validate({ email }, {
             email: Joi.string().email().required()
         });
         if (validate.error) {
@@ -71,6 +71,7 @@ class User {
             email: Joi.string().email().required(),
             columns: Joi.array()
         });
+
         if (validate.error) {
             return [null, validate.error];
         }
@@ -82,6 +83,7 @@ class User {
                 [columns, email]).catch((err) => {
                     error = err;
                 });
+
         if (error) return [null, error];
         result = rows[0];
         return [result, error];
