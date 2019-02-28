@@ -7,6 +7,7 @@
     "bcrypt": "^3.0.4",
     "config": "^3.0.0",
     "joi": "^14.3.0",
+    "joi-to-swagger": "^3.1.0",
     "koa": "^2.6.2",
     "koa-bodyparser": "^4.2.1",
     "koa-passport": "^4.1.1",

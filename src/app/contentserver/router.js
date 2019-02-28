@@ -16,11 +16,17 @@ let companyController = new CompanyController();
 let auth = new AuthController();
 
 
-router.post('/login', auth.login);
+router.post('/fast_registration', auth.isNotAuthenticated , auth.fastRegistration);
+router.get('/send_activation_link', auth.sendActivationLink);
+router.post('/activation', auth.clickActiveLink);
+router.get('/resend_activation_link', auth.reSendActivationLink);
 
+router.post('/set_new_password', auth.setNewPassword);
+router.post('/reset_password_email', auth.sendResetPasswordEmail);
+
+router.post('/login', auth.login);
 router.get('/logout', auth.logout);
 
-router.post('/fast_register', auth.fastRegister);
 
 
 router.get('/api/v1/page/:slug', pageController.getPage);

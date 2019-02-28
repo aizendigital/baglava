@@ -62,6 +62,8 @@ class JobController {
 
     };
 
+    //TODO elastic search
+
     /**
      * Path: /api/v1/jobs/:companySlug/:jobSlug
      * Method: Get

@@ -22,7 +22,6 @@ global.connectionPool = mysqlDriver(); // put in global to pass to sub-apps
 // set up MySQL connection
 app.use(async function mysqlConnection(ctx, next) {
    try {
-      console.log('------------------------------------------------------------');
       // keep copy of ctx.state.db in global for access from models
       ctx.state.db = global.db = await global.connectionPool.getConnection();
       ctx.state.db.connection.config.namedPlaceholders = true;//TODO refactor
@@ -46,20 +45,20 @@ app.use(async function mysqlConnection(ctx, next) {
 app.keys = config.sessionSecretKey;
 app.use(session({ key: 'sess-id' }, app));
 
-
 app.use(async (ctx, next) => {
    try {
       await next();
    } catch (err) {
       ctx.status = err.status || 500;
+      console.log(err);
       ctx.body = { data: null, error: err.message, status: false };//TODO centrally error handling
       //  ctx.app.emit('error', err, ctx);
    }
 });
 
 
-app.use(pino)
-   .use(bodyParser())
+app.use(pino);
+app.use(bodyParser())
    .use(passport.initialize())
    .use(passport.session())
    .use(sessionManager)
