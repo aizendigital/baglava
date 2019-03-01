@@ -76,6 +76,4 @@ app.on('error', (err, ctx) => {
 
 pino.logger.info('Listening on ' + config.bindAddress + ':' + config.bindPort);
 
-app.listen(config.bindPort, config.bindAddress);
-
-module.exports = app;
+module.exports = app.listen(config.bindPort, config.bindAddress);;

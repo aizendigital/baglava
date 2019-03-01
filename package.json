@@ -5,6 +5,8 @@
   "main": "index.js",
   "dependencies": {
     "bcrypt": "^3.0.4",
+    "chai": "^4.2.0",
+    "chai-http": "^4.2.1",
     "config": "^3.0.0",
     "joi": "^14.3.0",
     "joi-to-swagger": "^3.1.0",
