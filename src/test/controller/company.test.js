@@ -5,8 +5,8 @@
 const mongoose = require('mongoose');
 const assert = require('assert');
 const sinon = require('sinon');
-const companyController = require('../company');
-const companyModel = require('../../../../domain/company/company');
+// const companyController = require('../company');
+// const companyModel = require('../../../../domain/company/company');
 
 
 describe('Company controller methods', () => {
