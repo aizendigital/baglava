@@ -3,8 +3,8 @@
 
 const assert = require('assert');
 const sinon = require('sinon');
-const User = require('./user');
-const mysqlInterface = require('../../test/mysql2TestInterface')
+const User = require('../../domain/user/user');
+const mysqlInterface = require('../mysql2TestInterface')
 
 
 describe('User model methods', async () => {

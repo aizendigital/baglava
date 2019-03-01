@@ -28,7 +28,6 @@ app.use(async function mysqlConnection(ctx, next) {
       // traditional mode ensures not null is respected for unsupplied fields, ensures valid JavaScript dates, etc
       // await ctx.state.db.query('SET SESSION sql_mode = "TRADITIONAL"');
 
-
       await next();
 
       ctx.state.db.release();
@@ -78,3 +77,5 @@ app.on('error', (err, ctx) => {
 pino.logger.info('Listening on ' + config.bindAddress + ':' + config.bindPort);
 
 app.listen(config.bindPort, config.bindAddress);
+
+module.exports = app;
