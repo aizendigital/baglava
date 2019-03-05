@@ -1,15 +1,67 @@
 'use strict';
 
-const jobQuerySchema = require('../../../domain/job/jobValidationSchema');
+const jobValidationSchema = require('../../../domain/job/validation');
 const companyModel = require('../../../domain/company/company');
 const jobModel = require('../../../domain/job/job');
 const constants = require('../../../utils/constants');
-const slugify = require('slugify');
 const Joi = require('joi');
 
 
 
 class JobController {
+
+    /**
+     * Path: /api/v1/job/description/
+     * Method : GET
+     * Desc : search description
+     */
+    async searchJobDescriptionTemplate() {
+        //TODO
+    }
+
+    /**
+     * Path: /api/v1/job/requirements
+     * Method : GET
+     * Desc : search requirements
+     */
+    async searchJobRequirementsTemplate() {
+        //TODO
+    }
+
+    /**
+     * Path: /api/v1/job/benefits
+     * Method : GET
+     * Desc : search benefits
+     */
+    async searchJobBenefitsTemplate() {
+        //TODO
+    }
+
+    /**
+     * Path: /api/v1/jobs
+     * Method: POST
+     * Desc: create new Job
+     */
+
+    async createJob(ctx, next) {
+
+        let result = Joi.validate(ctx.request.body, jobValidationSchema.createJob);
+        if (result.error) ctx.throw(result.error);
+
+
+        ctx.request.body.slug = await generateModelSlug(ctx.request.body.title, jobModel);
+
+        let job = await jobModel.
+            createJob(ctx.request.body)
+            .catch(err => {
+                ctx.throw(err);
+            });
+
+        ctx.body = { data: { id: job._id, slug: job.slug }, error: null };
+
+    };
+
+
 
 
     /**
@@ -37,30 +89,7 @@ class JobController {
 
     };
 
-    /**
-     * Path: /api/v1/jobs
-     * Method: POST
-     * Desc: create new Job
-     */
 
-    async createJob(ctx, next) {
-
-        let result = Joi.validate(ctx.request.body, jobQuerySchema.job);
-        if (result.error !== null) {
-            ctx.throw(400);
-        }
-
-        ctx.request.body.slug = await generateModelSlug(ctx.request.body.title, jobModel);
-
-        let job = await jobModel.
-            createJob(ctx.request.body)
-            .catch(err => {
-                ctx.throw(err);
-            });
-
-        ctx.body = { data: { id: job._id, slug: job.slug }, error: null };
-
-    };
 
     //TODO elastic search
 

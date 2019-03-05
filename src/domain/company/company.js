@@ -7,16 +7,32 @@ class Company {
         this.connection = connection;
     }
 
-    async createCompany(companyName) {
-        if (!companyName) return [null, 'invalid company name'];
-        let result, error = null;
-        let [rows, fields] = await this.connection.query('INSERT INTO company(name) VALUES(?)',
-            [companyName]).catch((err) => {
+    async createCompany(name) {
+        let validate = Joi.validate({ name }, { name: Joi.string() });
+        if (validate.error) return [null, validate.error];
+
+        let error = null;
+        let rowsFields = await this.connection.query('INSERT INTO company(name) VALUES(?)',
+            [name]).catch((err) => {
+                error = err;
+            });
+
+        if (error) return [null, error];
+        const [rows, fields] = rowsFields;
+        return [rows.insertId, error];
+    }
+
+    async checkExistCompanyByName(name) {
+        let validate = Joi.validate({ name }, { name: Joi.string() });
+        if (validate.error) return [null, validate.error];
+
+        const rowsFields = await this.connection.query('SELECT * FROM company WHERE name = ?',
+            [name]).catch((err) => {
                 error = err;
             });
         if (error) return [null, error];
-        result = rows.insertId;
-        return [result, error];
+        const [rows, fields] = rowsFields;
+        return [rows[0], error];
     }
 
     async checkCompanyExistOrOwnerIsActive(companyName) {

@@ -153,9 +153,28 @@ class User {
         return [rows[0], error];
     }
 
-    // async updateUser(userData) {
+    async updateCompanyId(userId, companyId) {
 
-    // }
+        let validate = Joi.validate({ userId, companyId }, {
+            userId: Joi.number(),
+            companyId: Joi.string().required()
+        });
+
+        if (validate.error) {
+            return [null, validate.error];
+        }
+
+        let error = null;
+
+        const rowsFields = await this.connection.query('UPDATE user SET company_id = ? WHERE id = ?',
+            [companyId, userId]).catch((err) => {
+                error = err;
+            });
+
+        if (error) return [null, error];
+        const [rows, fields] = rowsFields;
+        return [rows[0], error];
+    }
 
     async resetToken(userId) {
         let validate = Joi.validate({ userId }, {

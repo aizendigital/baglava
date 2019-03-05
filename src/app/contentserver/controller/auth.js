@@ -10,7 +10,11 @@ const Joi = require('joi');
 
 
 class AuthController {
-
+    
+    constructor(connection) {
+        this.connection = connection;
+        this.userModel = new User(connection);
+    }
 
     /**
      * Path: /fast_register
@@ -22,16 +26,15 @@ class AuthController {
         let result = Joi.validate(ctx.request.body, userValidationSchema.fastRegister);
         if (result.error) ctx.throw(result.error);
 
-        const userModel = new User(ctx.state.db);
-        const [userExist, userError] = await userModel.checkExistUserByEmail(ctx.request.body.email);
+        const [userExist, userError] = await this.userModel.checkExistUserByEmail(ctx.request.body.email);
         if (userError) ctx.throw(userError);
 
         if (userExist) ctx.throw('user exists');
 
-        const [userId, registerError] = await userModel.fastRegister(ctx.request.body.email, ctx.request.body.password);
+        const [userId, registerError] = await this.userModel.fastRegister(ctx.request.body.email, ctx.request.body.password);
         if (registerError) ctx.throw(registerError);
 
-        let [user, authError] = await userModel.getUserByEmail(ctx.request.body.email, ['id', 'email', 'password', 'created_at']);
+        let [user, authError] = await this.userModel.getUserByEmail(ctx.request.body.email, ['id', 'email', 'password', 'created_at']);
         if (authError) ctx.throw(authError);
 
         ctx.login(user);
@@ -48,9 +51,8 @@ class AuthController {
 
     async sendActivationLink(ctx) {
 
-        const userModel = new User(ctx.state.db);
         if (ctx.isAuthenticated()) {
-            const [userId, userError] = await userModel.isUserActive(ctx.state.user.id);
+            const [userId, userError] = await this.userModel.isUserActive(ctx.state.user.id);
             if (userId) { ctx.throw('user is active'); }
 
             //send email
@@ -72,18 +74,17 @@ class AuthController {
         let result = Joi.validate(ctx.request.body, userValidationSchema.checkActivateToken);
         if (result.error) ctx.throw(result.error);
 
-        const userModel = new User(ctx.state.db);
-        let [userExist, userError] = await userModel.checkExistUserByEmail(ctx.request.body.email);
+        let [userExist, userError] = await this.userModel.checkExistUserByEmail(ctx.request.body.email);
         if (userError) ctx.throw(userError);
 
         if (!userExist) ctx.throw('user does not exists');
 
-        let [userInfo, tokenError] = await userModel.checkValidTokenExist(ctx.request.body.token);
+        let [userInfo, tokenError] = await this.userModel.checkValidTokenExist(ctx.request.body.token);
         if (tokenError) ctx.throw(tokenError);
 
         if (!userInfo) ctx.throw('invalid token');
 
-        [userInfo, userError] = await userModel.expireTokenAndActivate(userInfo.id, ctx.request.body.token);
+        [userInfo, userError] = await this.userModel.expireTokenAndActivate(userInfo.id, ctx.request.body.token);
         if (userError) ctx.throw(userError);
 
         ctx.body = { data: { message: 'successfully activated' }, error: null };
@@ -99,12 +100,11 @@ class AuthController {
     async reSendActivationLink(ctx) {
         //TODO validate too many active link
 
-        const userModel = new User(ctx.state.db);
         if (ctx.isAuthenticated()) {
-            let [userId, userError] = await userModel.isUserActive(ctx.state.user.id);
+            let [userId, userError] = await this.userModel.isUserActive(ctx.state.user.id);
             if (userId) { ctx.throw('user is active'); }
 
-            [userId, userError] = await userModel.resetToken(ctx.state.user.id);
+            [userId, userError] = await this.userModel.resetToken(ctx.state.user.id);
             if (userError) ctx.throw(userError);
 
             //TODO send email
@@ -126,12 +126,11 @@ class AuthController {
         let result = Joi.validate(ctx.request.body, userValidationSchema.resetPassword);
         if (result.error) ctx.throw(result.error);
         //TODO check too many reset password request
-        const userModel = new User(ctx.state.db);
-        let [user , error] = await userModel.checkExistUserByEmail(ctx.request.body.email);
-        if(error) ctx.throw(error);
+        let [user, error] = await this.userModel.checkExistUserByEmail(ctx.request.body.email);
+        if (error) ctx.throw(error);
         if (!user) ctx.throw('user does not exists');
 
-        [user , error] = await userModel.resetToken(user.id);
+        [user, error] = await this.userModel.resetToken(user.id);
         if (error) ctx.throw(error);
 
         //send email
@@ -150,22 +149,21 @@ class AuthController {
         let result = Joi.validate(ctx.request.body, userValidationSchema.setPassword);
         if (result.error) ctx.throw(result.error);
 
-        const userModel = new User(ctx.state.db);
-        let [user , error] = await userModel.checkExistUserByEmail(ctx.request.body.email);
-        if(error) ctx.throw(error);        
+        let [user, error] = await this.userModel.checkExistUserByEmail(ctx.request.body.email);
+        if (error) ctx.throw(error);
         if (!user) ctx.throw('user does not exists');
 
-        let [auth , authError] = await userModel.checkPassword(ctx.request.body.password, user);
+        let [auth, authError] = await this.userModel.checkPassword(ctx.request.body.password, user);
         if (authError) ctx.throw(authError);
-        
-        if(auth) ctx.throw('this is not new password');
 
-        let [userId, userError] = await userModel.checkValidTokenExist(ctx.request.body.token);
+        if (auth) ctx.throw('this is not new password');
+
+        let [userId, userError] = await this.userModel.checkValidTokenExist(ctx.request.body.token);
         if (userError) ctx.throw(userError);
 
         if (!userId) ctx.throw('invalid token');
 
-        [userId, userError] = await userModel.restPassword(ctx.request.body.email, ctx.request.body.password);
+        [userId, userError] = await this.userModel.restPassword(ctx.request.body.email, ctx.request.body.password);
         if (userError) ctx.throw(userError);
 
         ctx.body = { data: { message: 'password reset successfully' }, error: null };
@@ -174,8 +172,7 @@ class AuthController {
 
     async isAuthenticated(ctx, next) {
         if (ctx.isAuthenticated()) {
-            const userModel = new User(ctx.state.db);
-            const [userId, userError] = await userModel.isUserActive(ctx.state.user.id);
+            const [userId, userError] = await this.userModel.isUserActive(ctx.state.user.id);
             if (userId) { return next(); } else { ctx.throw('user is not active'); }
         }
 
@@ -183,6 +180,7 @@ class AuthController {
     }
 
     async isNotAuthenticated(ctx, next) {
+        console.log('is not auth')
         if (ctx.isAuthenticated()) ctx.throw('user must be logged out first!');
         return next();
     }

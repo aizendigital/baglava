@@ -8,7 +8,7 @@ const path = require('path');
 const app = new Koa();
 const pino = require('koa-pino-logger')();
 const config = require('../../config/config');
-const router = require('./router.js');
+const Router = require('./router.js');
 const mysqlDriver = require('../../driver/mysql/mysql');
 const passport = require('../../security/passport');
 
@@ -18,6 +18,7 @@ const session = require('koa-session');
 
 global.connectionPool = mysqlDriver(); // put in global to pass to sub-apps
 
+const router = new Router(mysqlDriver());
 
 // set up MySQL connection
 app.use(async function mysqlConnection(ctx, next) {
@@ -61,8 +62,8 @@ app.use(bodyParser())
    .use(passport.initialize())
    .use(passport.session())
    .use(sessionManager)
-   .use(router.routes())
-   .use(router.allowedMethods());
+   .use(router.routes.bind(router))
+   .use(router.allowedMethods.bind(router))
 
 
 
