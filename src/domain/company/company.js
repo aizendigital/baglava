@@ -1,6 +1,6 @@
 
 'use strict';
-const exception = require('../../exception/customException');
+const Joi = require('joi');
 
 class Company {
     constructor(connection) {
@@ -8,7 +8,7 @@ class Company {
     }
 
     async createCompany(name) {
-        let validate = Joi.validate({ name }, { name: Joi.string() });
+        let validate = Joi.validate({ name }, { name: Joi.string().required() });
         if (validate.error) return [null, validate.error];
 
         let error = null;

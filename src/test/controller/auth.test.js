@@ -17,31 +17,31 @@ describe('#Auth Controller', () => {
     });
     describe('Fast Registration', () => {
 
-        it('fast register user with valid data', async () => {
-            //
-            await utils.truncateDb(connection, 'user');
-            let response = await request(server)
-                .post('/fast_registration')
-                .send({
-                    email: 'valid@email.com',
-                    password: 'valid_password',
-                });
+            // it('fast register user with valid data', async () => {
+            //     //
+            //     await utils.truncateDb(connection, 'user');
+            //     let response = await request(server)
+            //         .post('/fast_registration')
+            //         .send({
+            //             email: 'valid@email.com',
+            //             password: 'valid_password',
+            //         });
 
 
-            expect(response).to.have.status(200);
+            //     expect(response).to.have.status(200);
 
-        });
-        it('fast register user with invalid data', async () => {
-            await utils.truncateDb(connection, 'user');
-            let response = await request(server)
-                .post('/fast_registration')
-                .send({
-                    email: 'valid',
-                    password: 'valid_password',
-                });
+            // });
+            // it('fast register user with invalid data', async () => {
+            //     await utils.truncateDb(connection, 'user');
+            //     let response = await request(server)
+            //         .post('/fast_registration')
+            //         .send({
+            //             email: 'valid',
+            //             password: 'valid_password',
+            //         });
 
 
-            expect(response).not.to.have.status(200);
-        });
+            //     expect(response).not.to.have.status(200);
+            // });
     });
 });
