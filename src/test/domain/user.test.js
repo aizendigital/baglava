@@ -24,16 +24,24 @@ describe('User model methods', async () => {
 
     //Test name, valid input(query, input) , valid behavior , invalid input invalid behavior 
 
-    describe('Valid Inputs', () => {
-        const validModelTest = ((name, input, func) => {
+    describe('Tests:', () => {
+        const modelTest = ((name, input, func, valid) => {
             describe(`#${name}`, () => {
                 for (let i = 0; i < input.length; i++) {
                     it(`#${name} ` + JSON.stringify(input[i][1]), (done) => {
-                        mysqlMock
-                            .expects('query')
-                            .withArgs(input[i][0], input[i][1])
-                            .resolves([{ insertId: 11 }, null])
-                            ;
+                        if (valid) {
+                            mysqlMock
+                                .expects('query')
+                                .withArgs(input[i][0], input[i][1])
+                                .resolves([{ insertId: 11 }, null])
+                                ;
+                        } else {
+                            mysqlMock
+                                .expects('query')
+                                .withArgs(input[i][0], input[i][1])
+                                .never()
+                                ;
+                        }
                         func(...input[i][1]);
                         mysqlMock.verify();
                         done();
@@ -48,28 +56,7 @@ describe('User model methods', async () => {
             ['a@a.com']
         ]];
 
-        validModelTest('check Exist By Email', validExistUser, user.checkExistUserByEmail.bind(user));
-
-    });
-
-    describe('InValid Inputs', () => {
-        const inValidModelTest = ((name, input, func) => {
-            describe(`#${name}`, () => {
-                for (let i = 0; i < input.length; i++) {
-                    it(`#${name} ` + JSON.stringify(input[i][1]), (done) => {
-                        mysqlMock
-                            .expects('query')
-                            .withArgs(input[i][0], input[i][1])
-                            .never()
-                            ;
-                        func(...input[i][1]);
-                        mysqlMock.verify();
-                        done();
-                    });
-                }
-            });
-        });
-        user = new User(mysqlInterface);
+        modelTest('check Exist By Email valid', validExistUser, user.checkExistUserByEmail.bind(user), true);
 
         const inValidExistUser = [
             ['SELECT * FROM user WHERE email = ?', ['']],
@@ -77,13 +64,8 @@ describe('User model methods', async () => {
             ['SELECT * FROM user WHERE email = ?', [undefined]]
         ];
 
-        inValidModelTest('check Exist By Email', inValidExistUser, user.checkExistUserByEmail.bind(user));
+        modelTest('check Exist By Email invalid', validExistUser, user.checkExistUserByEmail.bind(user), false);
 
-        // const inValidGetUserByEmail = [
-        //     ['SELECT ?? FROM user WHERE email = ?', ['']],
-        //     ['SELECT * FROM user WHERE email = ?', [null]],
-        //     ['SELECT * FROM user WHERE email = ?', [undefined]]
-        // ];
     });
 
 
