@@ -180,7 +180,6 @@ class AuthController {
     }
 
     async isNotAuthenticated(ctx, next) {
-        console.log('is not auth')
         if (ctx.isAuthenticated()) ctx.throw('user must be logged out first!');
         return next();
     }

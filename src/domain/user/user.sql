@@ -1,8 +1,7 @@
 CREATE TABLE IF NOT EXISTS `Aizen_db`.`user` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `company_id` INT,
   `email` CHAR(45) NOT NULL,
-  `company_role` CHAR(45),
+  `company_role` CHAR(45) NULL,
   `active` BOOLEAN NOT NULL,
   `password` CHAR(255) NOT NULL,
   `token` CHAR(100),

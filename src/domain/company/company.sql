@@ -8,7 +8,6 @@ CREATE TABLE IF NOT EXISTS `Aizen_db`.`company` (
   `foundDate` DATETIME NULL,
   `industry` CHAR(100) NULL,
   `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` DATETIME ON UPDATE CURRENT_TIMESTAMP,
-  `location_id` INT NOT NULL,
+  `updated_at` DATETIME ON UPDATE CURRENT_TIMESTAMP
   PRIMARY KEY (`id`))
 ENGINE = InnoDB

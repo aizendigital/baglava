@@ -1,8 +1,9 @@
 'use strict';
 
-const jobValidationSchema = require('../../../domain/job/validation');
+const jobValidation = require('../../../domain/job/validation');
 const companyModel = require('../../../domain/company/company');
-const jobModel = require('../../../domain/job/job');
+const User_Company = require('../../../domain/user_company/user_company');
+const Job = require('../../../domain/job/job');
 const constants = require('../../../utils/constants');
 const Joi = require('joi');
 
@@ -10,54 +11,44 @@ const Joi = require('joi');
 
 class JobController {
 
+    //GET JOB TITLES STATIC FILE
+
+    //GET COUNTRY & REGION STATIC FILE
+
     /**
-     * Path: /api/v1/job/description/
+     * Path: /api/v1/job/template/
      * Method : GET
      * Desc : search description
      */
-    async searchJobDescriptionTemplate() {
+    async searchJobTemplate() {
         //TODO
     }
 
-    /**
-     * Path: /api/v1/job/requirements
-     * Method : GET
-     * Desc : search requirements
-     */
-    async searchJobRequirementsTemplate() {
-        //TODO
-    }
 
-    /**
-     * Path: /api/v1/job/benefits
-     * Method : GET
-     * Desc : search benefits
-     */
-    async searchJobBenefitsTemplate() {
-        //TODO
-    }
+    //GET INDUSTRY & JOB FUNCTION STATIC FILE
 
-    /**
-     * Path: /api/v1/jobs
-     * Method: POST
-     * Desc: create new Job
-     */
+    //GET EMPLOYMENT DETAIL STATIC FILE
+
+    //GET CURRENCY JOB FUNCTION
 
     async createJob(ctx, next) {
 
-        let result = Joi.validate(ctx.request.body, jobValidationSchema.createJob);
+        let result = Joi.validate(ctx.request.body, jobValidation.createJob);
         if (result.error) ctx.throw(result.error);
 
+        const user_companyModel = User_Company(ctx.state.db);
 
-        ctx.request.body.slug = await generateModelSlug(ctx.request.body.title, jobModel);
+        let [permission, permissionError] = await user_companyModel.checkCreateJobPermission(ctx.state.user.id, ctx.request.body.companyId);
+        if (permissionError) ctx.throw(permissionError);
 
-        let job = await jobModel.
-            createJob(ctx.request.body)
-            .catch(err => {
-                ctx.throw(err);
-            });
+        if (permission) ctx.throw('you do not have permission');
 
-        ctx.body = { data: { id: job._id, slug: job.slug }, error: null };
+        const jobModel = Job(ctx.state.db);
+
+        let [jobId, creationError] = jobModel.createJob(ctx.request.body)//TODO
+        if (creationError) ctx.throw(creationError);
+
+        ctx.body = { data: { id: jobId }, error: null };
 
     };
 

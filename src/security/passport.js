@@ -9,7 +9,7 @@ passport.serializeUser(function (user, done) {
 
 passport.deserializeUser(async function (id, done) {
   userModel = new User(global.db);
-  let [user, error] = await userModel.getUserById(id, ['id', 'email', 'active']);
+  let [user, error] = await userModel.getUserById(id, ['id', 'email', 'active', 'company_id']);
   if (error) done(error);
   if (user) {
     done(null, user);
