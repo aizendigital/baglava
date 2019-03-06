@@ -64,69 +64,10 @@ describe('User model methods', async () => {
             ['SELECT * FROM user WHERE email = ?', [undefined]]
         ];
 
-        modelTest('check Exist By Email invalid', validExistUser, user.checkExistUserByEmail.bind(user), false);
+        modelTest('check Exist By Email invalid', inValidExistUser, user.checkExistUserByEmail.bind(user), false);
 
     });
 
-
-
-    // describe('#.getUserByEmail', () => {
-
-    //     const valid = [
-    //         {
-    //             query: 'SELECT ?? FROM user WHERE email = ?', values: ['*', 'a@a'],
-    //             input: { email: 'a@a', columns: undefined }
-    //         },
-    //         {
-    //             query: 'SELECT ?? FROM user WHERE email = ?', values: [['id'], 'a@a'],
-    //             input: { email: 'a@a', columns: ['id'] }
-    //         },
-    //         {
-    //             query: 'SELECT ?? FROM user WHERE email = ?', values: [[''], 'a@a'],
-    //             input: { email: 'a@a', columns: [''] }
-    //         }
-    //     ];
-    //     for (let i = 0; i < valid.length; i++) {
-    //         it('#getUserByEmail ' + JSON.stringify(valid[i].input), (done) => {
-    //             mysqlMock
-    //                 .expects('query')
-    //                 .withArgs(valid[i].query, valid[i].values)
-    //                 .resolves([{ insertId: 11 }, null])
-    //                 ;
-    //             user.getUserByEmail(valid[i].input.email, valid[i].input.columns);
-    //             mysqlMock.verify();
-    //             done();
-    //         });
-    //     }
-
-    //     const invalid = [
-    //         {
-    //             query: 'SELECT ?? FROM user WHERE email = ?', values: ['*', 'a@a'],
-    //             input: { email: 'a@a', columns: '*' }
-    //         },
-    //         {
-    //             query: 'SELECT ?? FROM user WHERE email = ?', values: [null, 'a@a'],
-    //             input: { email: 'a@a', columns: null }
-    //         },
-    //         {
-    //             query: 'SELECT ?? FROM user WHERE email = ?', values: [undefined, 'a@'],
-    //             input: { email: 'a@', columns: undefined }
-    //         }
-    //     ];
-    //     for (let i = 0; i < invalid.length; i++) {
-    //         it('#getUserByEmail ' + JSON.stringify(invalid[i].input), (done) => {
-    //             mysqlMock
-    //                 .expects('query')
-    //                 .withArgs(invalid[i].query, invalid[i].values)
-    //                 .never()
-    //                 ;
-    //             user.getUserByEmail(invalid[i].input.email, invalid[i].input.columns);
-    //             mysqlMock.verify();
-    //             done();
-    //         });
-    //     }
-
-    // });
 
 
     // describe('#.getUserById', () => {
