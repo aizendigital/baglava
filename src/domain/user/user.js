@@ -3,7 +3,8 @@
 
 const bcrypt = require('bcrypt');
 const Joi = require('joi');
-
+const utils = require('../../utils/functions');
+const userValidationSchema = require('./validation');
 
 class User {
 
@@ -12,39 +13,25 @@ class User {
         this.connection = connection;
     }
 
-    //after activating user
+    async fastRegister(email, password) {
+        const validation = Joi.validate({ email, password }, userValidationSchema.fastRegister);
+        if (validation.error) return [null, validation.error];
 
-    // async createUser(email, password) {
-    //     const { error, value } = Joi.validate({ email, password }, {
-    //         email: Joi.string().email().required(),
-    //         companyName: Joi.string().min(3).required()
-    //     });
+        let error = null;
+        const randomToken = utils.uuid() + utils.uuid();
+        let tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
 
-    //     if (!email || !password) throw new exception('invalid createUser Input', 'model');
-    //     let hashedPassword = bcrypt.hashSync(password, 10);//TODO salt
-    //     let [rows, fields] = await this.connection.query('INSERT INTO user(email, password) VALUES(?,?)',
-    //         [email, hashedPassword]);
+        const hashedPassword = bcrypt.hashSync(password, 10);
 
-    //     return rows.insertId;
-    // }
-
-    async fastRegister(email, companyId) {
-        let validate = Joi.validate({ email, companyId }, {
-            email: Joi.string().email().required(),
-            companyId: Joi.number().required()
-        });
-        if (validate.error) {
-            return [null, validate.error];
-        }
-        let result, error = null;
-
-        let [rows, fields] = await this.connection.query('INSERT INTO user(email, company_id, active) VALUES(?,?,?)',
-            [email, companyId, false]).catch((err) => {
+        const rowsFields = await this.connection.query('INSERT INTO user(email, password, token, expire_token, active) VALUES(?,?,?,?,?)',
+            [email, hashedPassword, randomToken, tomorrow, false]).catch((err) => {
                 error = err;
             });
         if (error) return [null, error];
-        result = rows.insertId;
-        return [result, error];;
+
+        const [rows, fields] = rowsFields;
+        return [rows.insertId, error];
     }
 
     async checkExistUserByEmail(email) {
@@ -54,16 +41,15 @@ class User {
         if (validate.error) {
             return [null, validate.error];
         }
-        let result, error = null;
+        let error = null;
 
-
-        const [rows, fields] = await this.connection.query('SELECT * FROM user WHERE email = ?',
+        const rowsFields = await this.connection.query('SELECT * FROM user WHERE email = ?',
             [email]).catch((err) => {
                 error = err;
             });
         if (error) return [null, error];
-        result = rows[0];
-        return [result, error];
+        const [rows, fields] = rowsFields;
+        return [rows[0], error];
     }
 
     async getUserByEmail(email, columns) {
@@ -75,18 +61,19 @@ class User {
         if (validate.error) {
             return [null, validate.error];
         }
-        let result, error = null;
+        let error = null;
 
         columns = columns ? columns : '*';
-        const [rows, fields] =
+        const rowsFields =
             await this.connection.query('SELECT ?? FROM user WHERE email = ?',
                 [columns, email]).catch((err) => {
                     error = err;
                 });
-
         if (error) return [null, error];
-        result = rows[0];
-        return [result, error];
+
+        const [rows, fields] = rowsFields;
+
+        return [rows[0], error];
     }
 
     async checkPassword(password, user) {
@@ -95,7 +82,7 @@ class User {
             user: Joi.object()
                 .keys({
                     password: Joi.string().required()
-                })
+                }).unknown(true)
                 .required()
         });
         if (validate.error) {
@@ -104,30 +91,130 @@ class User {
         return [bcrypt.compareSync(password, user.password), null];
     }
 
-    async getUserById(email, columns) {
-        let validate = Joi.validate({ email, columns }, {
-            email: Joi.string().email().required(),
+    async getUserById(id, columns) {
+        let validate = Joi.validate({ id, columns }, {
+            id: Joi.number().required(),
             columns: Joi.array()
         });
         if (validate.error) {
             return [null, validate.error];
         }
-        let result, error = null;
+        let error = null;
 
         columns = columns ? columns : '*';
-        const [rows, fields] = await this.connection.query('SELECT ?? FROM USER WHERE ID = ?',
-            [columns, email]).catch((err) => {
+        const rowsFields = await this.connection.query('SELECT ?? FROM user WHERE ID = ?',
+            [columns, id]).catch((err) => {
                 error = err;
             });
         if (error) return [null, error];
-        result = rows[0];
-        return [result, error];
+        const [rows, fields] = rowsFields;
+
+        return [rows[0], error];
+    }
+
+    async checkValidTokenExist(token) {
+
+        let validate = Joi.validate({ token }, {
+            token: Joi.string().required()
+        });
+        if (validate.error) {
+            return [null, validate.error];
+        }
+
+        let error = null;
+
+        const rowsFields = await this.connection.query('SELECT id FROM user WHERE token = ? and expire_token > ?',
+            [token, new Date()]).catch((err) => {
+                error = err;
+            });
+        if (error) return [null, error];
+        const [rows, fields] = rowsFields;
+        return [rows[0], error];
+    }
+
+    async expireTokenAndActivate(userId, token) {
+        let validate = Joi.validate({ userId, token }, {
+            userId: Joi.number(),
+            token: Joi.string().required()
+        });
+
+        if (validate.error) {
+            return [null, validate.error];
+        }
+        let error = null;
+
+        const rowsFields = await this.connection.query('UPDATE user SET token = ?, expire_token = ? , active = ?  WHERE id = ?',
+            [null, new Date(), true, userId]).catch((err) => {
+                error = err;
+            });
+
+        if (error) return [null, error];
+        const [rows, fields] = rowsFields;
+        return [rows[0], error];
+    }
+
+    async resetToken(userId) {
+        let validate = Joi.validate({ userId }, {
+            userId: Joi.number()
+        });
+        if (validate.error) {
+            return [null, validate.error];
+        }
+        let error = null;
+
+        let randomToken = utils.uuid() + utils.uuid();
+        let tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+
+        const rowsFields = await this.connection.query('UPDATE user set token = ?, expire_token = ?  WHERE id = ?',
+            [randomToken, tomorrow, userId]).catch((err) => {
+                error = err;
+            });
+        if (error) return [null, error];
+        const [rows, fields] = rowsFields;
+        return [rows[0], error];
+    }
+
+    async restPassword(email, password) {
+        let validate = Joi.validate({ email, password }, {
+            email: Joi.string().email().required(),
+            password: Joi.string().min(8).required()
+        });
+        if (validate.error) {
+            return [null, validate.error];
+        }
+        let error = null;
+
+        const hashedPassword = bcrypt.hashSync(password, 10);
+
+        const rowsFields = await this.connection.query('UPDATE user SET password = ? WHERE email = ?',
+            [hashedPassword, email]).catch((err) => {
+                error = err;
+            });
+        if (error) return [null, error];
+        const [rows, fields] = rowsFields;
+        return [rows[0], error];
+    }
+
+    async isUserActive(userId) {
+        let validate = Joi.validate({ userId }, {
+            userId: Joi.number(),
+        });
+        if (validate.error) {
+            return [null, validate.error];
+        }
+        let error = null;
+
+        const rowsFields = await this.connection.query('SELECT id FROM user WHERE active = 1 and id =  ?',
+            [userId]).catch((err) => {
+                error = err;
+            });
+        if (error) return [null, error];
+        const [rows, fields] = rowsFields;
+        return [rows[0], error];
     }
 
 
-    // async updateUser(userData) {
-
-    // }
 }
 
 

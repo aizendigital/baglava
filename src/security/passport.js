@@ -4,14 +4,13 @@ const LocalStrategy = require('passport-local').Strategy;
 
 
 passport.serializeUser(function (user, done) {
-  console.log('serialize', user);
   done(null, user.id)
 })
 
 passport.deserializeUser(async function (id, done) {
-  console.log('deserilize', id);
   userModel = new User(global.db);
-  let user = await userModel.getUserById(id, ['id', 'email']);
+  let [user, error] = await userModel.getUserById(id, ['id', 'email', 'active', 'company_id']);
+  if (error) done(error);
   if (user) {
     done(null, user);
   } else {
@@ -25,16 +24,19 @@ passport.use(new LocalStrategy({
   passwordField: 'password'
 },
   async function (email, password, done) {
-    console.log('strategy', { email, password });
-    console.log(global.db);
     userModel = new User(global.db);
 
-    let user = await userModel.getUserByEmail(email, ['id', 'email', 'password', 'created_at']);
-
+    let [user, error] = await userModel.getUserByEmail(email, ['id', 'email', 'active', 'password', 'created_at']);
+    if (error) done(error);
     if (!user) {
       done(null, false, { message: 'no such user' })
     }
-    if (user && await userModel.checkPassword(password, user)) {
+    if (!user.active) {
+      done(null, false, { message: 'user is not active' });
+    }
+    let [auth , authError] = await userModel.checkPassword(password, user);
+    if (authError) done(authError);
+    if (auth) {
       done(null, user);
     } else {
 

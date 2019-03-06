@@ -1,15 +1,58 @@
 'use strict';
 
-const jobQuerySchema = require('../../../domain/job/jobValidationSchema');
+const jobValidation = require('../../../domain/job/validation');
 const companyModel = require('../../../domain/company/company');
-const jobModel = require('../../../domain/job/job');
+const User_Company = require('../../../domain/user_company/user_company');
+const Job = require('../../../domain/job/job');
 const constants = require('../../../utils/constants');
-const slugify = require('slugify');
 const Joi = require('joi');
 
 
 
 class JobController {
+
+    //GET JOB TITLES STATIC FILE
+
+    //GET COUNTRY & REGION STATIC FILE
+
+    /**
+     * Path: /api/v1/job/template/
+     * Method : GET
+     * Desc : search description
+     */
+    async searchJobTemplate() {
+        //TODO
+    }
+
+
+    //GET INDUSTRY & JOB FUNCTION STATIC FILE
+
+    //GET EMPLOYMENT DETAIL STATIC FILE
+
+    //GET CURRENCY JOB FUNCTION
+
+    async createJob(ctx, next) {
+
+        let result = Joi.validate(ctx.request.body, jobValidation.createJob);
+        if (result.error) ctx.throw(result.error);
+
+        const user_companyModel = User_Company(ctx.state.db);
+
+        let [permission, permissionError] = await user_companyModel.checkCreateJobPermission(ctx.state.user.id, ctx.request.body.companyId);
+        if (permissionError) ctx.throw(permissionError);
+
+        if (permission) ctx.throw('you do not have permission');
+
+        const jobModel = Job(ctx.state.db);
+
+        let [jobId, creationError] = jobModel.createJob(ctx.request.body)//TODO
+        if (creationError) ctx.throw(creationError);
+
+        ctx.body = { data: { id: jobId }, error: null };
+
+    };
+
+
 
 
     /**
@@ -37,30 +80,9 @@ class JobController {
 
     };
 
-    /**
-     * Path: /api/v1/jobs
-     * Method: POST
-     * Desc: create new Job
-     */
 
-    async createJob(ctx, next) {
 
-        let result = Joi.validate(ctx.request.body, jobQuerySchema.job);
-        if (result.error !== null) {
-            ctx.throw(400);
-        }
-
-        ctx.request.body.slug = await generateModelSlug(ctx.request.body.title, jobModel);
-
-        let job = await jobModel.
-            createJob(ctx.request.body)
-            .catch(err => {
-                ctx.throw(err);
-            });
-
-        ctx.body = { data: { id: job._id, slug: job.slug }, error: null };
-
-    };
+    //TODO elastic search
 
     /**
      * Path: /api/v1/jobs/:companySlug/:jobSlug

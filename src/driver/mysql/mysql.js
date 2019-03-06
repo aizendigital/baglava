@@ -16,5 +16,4 @@ module.exports =  function () {
         connectionLimit: 10,
         queueLimit: 0
     });
-
 };

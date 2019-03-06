@@ -3,8 +3,8 @@
 
 const assert = require('assert');
 const sinon = require('sinon');
-const Company = require('./company');
-const mysqlInterface = require('../../test/mysql2TestInterface')
+const Company = require('../../domain/company/company');
+const mysqlInterface = require('../mysql2TestInterface')
 
 
 describe('Company model methods', async () => {

@@ -1,9 +1,9 @@
 'use strict';
 
-const companyQuerySchema = require('../../../domain/company/companyValidationSchema');
-const companyModel = require('../../../domain/company/company');
-const constants = require('../../../utils/constants');
-const utilFunctions = require('../../../utils/functions');
+const companyValidation = require('../../../domain/company/validation');
+const Company = require('../../../domain/company/company');
+const User_Company = require('../../../domain/user_company/user_company');
+
 
 const Joi = require('joi');
 
@@ -17,23 +17,27 @@ class CompanyController {
      * Desc: create new company
      */
 
-    async createCompany  (ctx, next) {
+    async createCompany(ctx, next) {
 
-        let result = Joi.validate(ctx.request.body, companyQuerySchema.company);
+        let result = Joi.validate(ctx.request.body, companyValidation.createCompany);
+        if (result.error !== null) ctx.throw(400);
 
-        if (result.error !== null) {
-            ctx.throw(400);
-        }
+        const companyModel = new Company(ctx.state.db);
+        const user_companyModel = new User_Company(ctx.state.db);
 
-        ctx.request.body.slug = await utilFunctions.generateModelSlug(ctx.request.body.title , companyModel);
+        const [exist, existError] = await companyModel.checkExistCompanyByName(ctx.request.body.name);
+        if (existError) ctx.throw(existError);
 
-        let company = await companyModel.
-            createCompany(ctx.request.body)
-            .catch(err => {
-                ctx.throw(err);
-             });
+        if (exist) ctx.throw('company exist');
 
-        ctx.body = { data: { id: company._id , slug: company.slug }, error: null };
+        const [companyId, createError] = await companyModel.createCompany(ctx.request.body.name);
+
+        if (createError) ctx.throw(createError);
+
+        const [update , updateError] = await user_companyModel.insertNewRelation(ctx.state.user.id, companyId, 'creator');
+        if (updateError) ctx.throw(updateError);
+
+        ctx.body = { data: { companyId: companyId }, error: null };
 
     };
 
